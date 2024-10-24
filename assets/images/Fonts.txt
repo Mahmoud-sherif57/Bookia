@@ -1,0 +1,5 @@
+Fonts used in this design:
+
+Font: Josefin Slab
+Author: Santiago Orozco
+Url: https://fonts.google.com/specimen/Josefin+Slab
