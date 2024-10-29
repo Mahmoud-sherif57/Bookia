@@ -28,7 +28,7 @@ class LoginScreen extends StatelessWidget {
         listener: (context, state) {
           if (state is AuthSuccessState) {
             // EasyLoading.showSuccess('Success login! ');
-            EasyLoading.showSuccess("Welcome back ${state.msg}");
+            EasyLoading.showSuccess("Welcome ${state.msg}");
             AppFunctions.navigateAndRemove(context, const WrapperHomeScreen());
           } else if (state is AuthFailedState) {
             // EasyLoading.showError('Failed to LogIn');
@@ -80,7 +80,7 @@ class LoginScreen extends StatelessWidget {
                         onPressed: () {
                           authCubit.togglePassword();
                         },
-                        icon: authCubit.hidden ? unhiddenicon : hiddenicon,
+                        icon: authCubit.hidden ? hiddenicon : unhiddenicon,
                       ),
                     ),
 
@@ -103,7 +103,7 @@ class LoginScreen extends StatelessWidget {
                     Center(
                       child: MainButton(
                           onTap: () {
-                            // we use the next condition to make the button Unclickable while loading .
+                            // to prevent the user from calling the api while loading ⤵
                             if (state is AuthLoadingState) return;
                             authCubit.login();
                           },

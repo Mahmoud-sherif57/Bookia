@@ -4,8 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class ReusableOtpField extends StatelessWidget {
+  final dynamic controller;
+
   const ReusableOtpField({
     super.key,
+    required this.controller,
   });
 
   @override
@@ -14,6 +17,7 @@ class ReusableOtpField extends StatelessWidget {
       width: 66, // it's 70 in figma
       height: 60,
       child: TextFormField(
+        controller: controller,
         // the next step is to move the indicator to next field automatically .
         onChanged: (value) {
           if (value.length == 1) {

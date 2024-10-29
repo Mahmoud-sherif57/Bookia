@@ -7,7 +7,6 @@ import 'package:bookia_118/feature/home/presentation/screens/notification.dart';
 import 'package:bookia_118/feature/login/presentation/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../../core/constants/constants.dart';
@@ -30,9 +29,7 @@ class HomeScreen extends StatelessWidget {
     //     var homeCubit = context.read<HomeScreenCubit>();
 
     return BlocConsumer<CategoryCubit, CategoryState>(
-      listener: (context, state) {
-
-      },
+      listener: (context, state) {},
       builder: (context, state) {
         return RefreshIndicator(
           onRefresh: categoryCubit.onRefresh,
@@ -118,7 +115,12 @@ class HomeScreen extends StatelessWidget {
                                             border: Border.all(color: AppColors.primary),
                                             borderRadius: BorderRadius.circular(10),
                                             image: DecorationImage(
-                                              image: AssetImage(bannerList[index].image!),
+                                              image: bannerList[index].image != null
+                                                  ? NetworkImage(
+                                                      bannerList[index].image ?? "",
+                                                    )
+                                                  : const AssetImage('assets/images/aflaton.png')
+                                                      as ImageProvider,
                                               fit: BoxFit.cover,
                                             ),
                                           ),
@@ -126,7 +128,7 @@ class HomeScreen extends StatelessWidget {
                                         Positioned(
                                           bottom: 20,
                                           left: 10,
-                                          child: Text(bannerList[index].title!,
+                                          child: Text(bannerList[index].title ?? "",
                                               overflow: TextOverflow.ellipsis, maxLines: 1),
                                         )
                                       ]),
@@ -157,8 +159,10 @@ class HomeScreen extends StatelessWidget {
 
                         ///---------- the category section-------->
                         Container(
-                          margin: const EdgeInsets.only(top: 10),
-                          decoration: BoxDecoration(color: AppColors.gray.withOpacity(0.1)),
+                          // margin: const EdgeInsets.only(top: 10),
+                          decoration: BoxDecoration(
+                              color: AppColors.primary.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(8)),
                           width: 350,
                           // width: size.width,
                           height: 100, //0.34
@@ -182,16 +186,20 @@ class HomeScreen extends StatelessWidget {
                                 );
                               } else {
                                 return Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                  padding: const EdgeInsets.all(5.0),
                                   child: Column(
                                     children: [
                                       Expanded(
-                                        child: CircleAvatar(
-                                          backgroundImage: AssetImage(categoryList[index].image!),
-                                          radius: 35,
-                                          child: Image(
-                                            fit: BoxFit.cover,
-                                            image: AssetImage(categoryList[index].image! ?? ""),
+                                        child: InkWell(
+                                          onTap: () {},
+                                          child: CircleAvatar(
+                                            backgroundImage: categoryList[index].image != null
+                                                ? NetworkImage(
+                                                    categoryList[index].image!,
+                                                  )
+                                                : const AssetImage('assets/images/aflaton.png')
+                                                    as ImageProvider,
+                                            radius: 35,
                                           ),
                                         ),
                                       ),
@@ -212,7 +220,7 @@ class HomeScreen extends StatelessWidget {
                             style: font30RegularDark.copyWith(fontSize: 24),
                           ),
                         ),
-                        const SizedBox(height: 15),
+                        const SizedBox(height: 5),
 
                         ///--------the popular books gridView------>
                         GridView.builder(
@@ -253,29 +261,30 @@ class HomeScreen extends StatelessWidget {
                                           InkWell(
                                             onTap: () {
                                               AppFunctions.navigateTo(
-                                                  context,
-                                                  BookDetails(
-                                                    data: booksListData[index],
-                                                  ));
+                                                  context, BookDetails(data: booksListData[index]));
                                             },
                                             child: Container(
                                               width: 140,
-                                              height: 200, //
+                                              height: 220, //
                                               margin: const EdgeInsets.all(10),
                                               decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(15),
                                                 image: DecorationImage(
+                                                  image: booksListData[index].imageUrl != null
+                                                      ? NetworkImage(
+                                                          booksListData[index].imageUrl!,
+                                                        )
+                                                      : const AssetImage('assets/images/aflaton.png')
+                                                          as ImageProvider,
                                                   fit: BoxFit.cover,
-                                                  // image: AssetImage(booksListData[index].imageUrl!),
-                                                  image: AssetImage(current.imageUrl!),
                                                 ),
+                                                borderRadius: BorderRadius.circular(15),
                                               ),
                                             ),
                                           ),
 
                                           ///---------add name of the item---------->
                                           Text(
-                                            current.bookName!,
+                                            current.bookName ?? "",
                                             // "Adham sharkawy",
                                             style: font18RegularDark.copyWith(fontSize: 15),
                                           ),

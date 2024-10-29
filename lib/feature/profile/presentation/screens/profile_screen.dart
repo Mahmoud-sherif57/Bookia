@@ -128,20 +128,20 @@ class ProfileScreen extends StatelessWidget {
                                 builder: (context) => FadeInUp(
                                   delay: const Duration(milliseconds: 50),
                                   child: AlertDialog(
-                                    title: Text("Log out "),
+                                    title: const Text("Log out "),
                                     contentPadding: const EdgeInsets.all(20),
-                                    content: Text("are you sure you want to log out ?"),
+                                    content: const Text("are you sure you want to log out ?"),
                                     actions: [
                                       TextButton(
                                           onPressed: () {
                                             AppFunctions.navigatePop(context);
                                           },
-                                          child: Text("No")),
+                                          child: const Text("No")),
                                       TextButton(
                                           onPressed: () {
                                             AuthCubit.get(context).logOut();
                                           },
-                                          child: Text("YES")),
+                                          child: const Text("YES")),
                                     ],
                                   ),
                                 ),

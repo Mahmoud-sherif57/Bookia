@@ -14,4 +14,15 @@ class AuthFailedState extends AuthState {
   AuthFailedState(this.error);
 }
 
+
+class ResendOtpLoadingState extends AuthState {}
+class ResendOtpSuccessState extends AuthState {
+  final String msg;
+  ResendOtpSuccessState(this.msg);
+}
+class ResendOtpFailedState extends AuthState {
+  final String error;
+  ResendOtpFailedState(this.error);
+}
+
 class TogglePasswordState extends AuthState {}

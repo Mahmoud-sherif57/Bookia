@@ -21,7 +21,7 @@ class BookDetails extends StatefulWidget {
 class _BookDetailsState extends State<BookDetails> {
   @override
   Widget build(BuildContext context) {
-    final categoryCubit = context.read<CategoryCubit>();
+    context.read<CategoryCubit>();
     // var current = booksList[index];
     BookModel current = widget.data;
 
@@ -62,21 +62,22 @@ class _BookDetailsState extends State<BookDetails> {
                             ],
                             borderRadius: BorderRadius.circular(15),
                             image: DecorationImage(
+                              image:  current.imageUrl != null
+                                  ? NetworkImage(current.imageUrl!)
+                                  : const AssetImage('assets/images/aflaton.png') as ImageProvider,
                               fit: BoxFit.cover,
-                              image: AssetImage(current.imageUrl!),
-                              // image: AssetImage(AppImages.book4),
                             ),
                           ),
                         ),
                         const SizedBox(height: 11),
 
                         ///-----the name of the book----->
-                        Text(current.bookName!, style: font24RegularDark),
+                        Text(current.bookName??"", style: font24RegularDark),
                         const SizedBox(height: 11),
 
                         ///-----the author name of the book----->
                         Text(
-                          "current.writerName",
+                          current.categoryName ??"",
                           style: font15RegularGray.copyWith(color: AppColors.primary),
                         ),
                         const SizedBox(height: 11),
@@ -100,7 +101,7 @@ class _BookDetailsState extends State<BookDetails> {
                 Row(
                   children: [
                     ///-----the price of the book----->
-                    Text("${current.price} \$", style: font24RegularDark),
+                    Text("${current.price ?? ""} \$", style: font24RegularDark),
                     const Spacer(),
 
                     ///-----the add to cart button----->
@@ -110,7 +111,8 @@ class _BookDetailsState extends State<BookDetails> {
                       },
                       width: 180,
                       color: AppColors.black,
-                      title: current.isOnTheCart! ? AppString.inTheCart : AppString.addToCart,
+                      title:  AppString.addToCart,
+                      // title: current.isOnTheCart! ? AppString.inTheCart : AppString.addToCart,
 
                       /// TODO: add cubit
                     )

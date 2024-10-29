@@ -17,16 +17,19 @@ class CategoryCubit extends Cubit<CategoryState> {
   List itemsInWishList = [];
   List itemsInCart = [];
 
+
+  ///-------OnRefresh function-------->
   Future<void> onRefresh() async {
-    booksListData.clear();
-    bannerList.clear();
-    categoryList.clear();
+    // booksListData.clear();
+    // bannerList.clear();
+    // categoryList.clear();
     await getAllBooks();
     while (state is GetAllBooksLoading) {
       await Future.delayed(const Duration(milliseconds: 100));
     }
   }
 
+  ///-------get all books function-------->
   Future<void> getAllBooks() async {
     emit(GetAllBooksLoading());
     await DioHelper.get(
@@ -53,15 +56,15 @@ class CategoryCubit extends Cubit<CategoryState> {
       }
 
       emit(GetAllBooksSuccess());
-      debugPrint(value.data["data"].toString());
+      // debugPrint(value.data["data"].toString());
     }).catchError((error) {
       if (error is DioException) {
-        debugPrint(error.message.toString());
-        debugPrint(error.response?.data);
+        // debugPrint(error.message.toString());
+        // debugPrint(error.response?.data);
         emit(GetAllBooksFailed(error.response?.data["message"] ?? "can not get your order"));
         return;
       }
-      debugPrint(error.toString());
+      // debugPrint(error.toString());
       emit(GetAllBooksFailed("can not get your order "));
       throw error;
     });
