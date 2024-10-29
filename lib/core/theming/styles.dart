@@ -14,6 +14,7 @@ TextStyle font20BoldDark = const TextStyle(
   fontWeight: FontWeightHelper.bold,
   color: AppColors.dark,
 );
+
 TextStyle font18RegularDark = const TextStyle(
   fontSize: 18,
   fontWeight: FontWeightHelper.regular,

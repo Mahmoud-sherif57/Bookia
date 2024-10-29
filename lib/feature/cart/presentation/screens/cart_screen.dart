@@ -71,7 +71,7 @@ class CartScreen extends StatelessWidget {
                                       Positioned(
                                         top: 10,
                                         left: 120,
-                                        child: Text(current.name),
+                                        child: Text(current.bookName),
                                       ),
 
                                       /// the book price
@@ -111,9 +111,7 @@ class CartScreen extends StatelessWidget {
                                             children: [
                                               /// the sum(+)
                                               InkWell(
-                                                onTap: () {
-                                                  CategoryCubit.get(context).increaseQuantity(current);
-                                                },
+                                                onTap: () {},
                                                 child: Container(
                                                   // margin: const EdgeInsets.all(4.0),
                                                   width: 30,
@@ -141,10 +139,7 @@ class CartScreen extends StatelessWidget {
 
                                               /// the minus (-)
                                               InkWell(
-                                                onTap: () {
-                                                  CategoryCubit.get(context)
-                                                      .decreaseQuantity(current, context);
-                                                },
+                                                onTap: () {},
                                                 child: Container(
                                                   // margin: const EdgeInsets.all(4.0),
                                                   width: 30,

@@ -3,6 +3,8 @@ import 'package:bookia_118/core/cubits/homeScreen_cubit/home_screen_cubit.dart';
 import 'package:bookia_118/feature/splash_screen/presentation/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'core/cubits/auth_cubit/auth_cubit.dart';
 import 'core/theming/theming.dart';
 
 
@@ -14,12 +16,14 @@ class BookiaApp extends StatelessWidget {
     return  MultiBlocProvider(
       providers: [
         BlocProvider(create: (context)=> HomeScreenCubit()),
-        BlocProvider(create: (context)=> CategoryCubit())
+        BlocProvider(create: (context)=> CategoryCubit()),
+        BlocProvider(create: (context)=> AuthCubit()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
        theme: lightTheme,
        home:  const SplashScreen(),
+        builder: EasyLoading.init(),
       ),
     );
   }

@@ -11,14 +11,22 @@ import 'package:bookia_118/core/widgets/reusable_text_form_field.dart';
 import 'package:bookia_118/core/widgets/social_auth.dart';
 import 'package:bookia_118/feature/login/presentation/screens/login_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../../core/cubits/auth_cubit/auth_cubit.dart';
+import '../../../../core/cubits/auth_cubit/auth_state.dart';
 
 class RegisterScreen extends StatelessWidget {
   const RegisterScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final authCubit = AuthCubit.get(context);
     return SafeArea(
-      child: Scaffold(
+      child: BlocConsumer<AuthCubit, AuthState>(
+  listener: (context, state) {},
+  builder: (context, state) {
+    return Scaffold(
         backgroundColor: AppColors.backGround,
         body: SingleChildScrollView(
           child: Padding(
@@ -63,10 +71,12 @@ class RegisterScreen extends StatelessWidget {
                 ///-------the password field-------->
                 ReusableTextFormField(
                   keyboardType: TextInputType.text,
-                  obscureText: true,
+                  obscureText: authCubit.hidden,
                   hintText: "",
                   suffixIcon: IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      authCubit.togglePassword();
+                    },
                     icon: const Icon(Icons.remove_red_eye),
                   ),
                   labelText: AppString.password,
@@ -77,10 +87,12 @@ class RegisterScreen extends StatelessWidget {
                 ///-------the confirm password field-------->
                  ReusableTextFormField(
                   keyboardType: TextInputType.text,
-                  obscureText: true,
+                  obscureText: authCubit.hidden,
                   hintText: "",
                   suffixIcon: IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      authCubit.togglePassword();
+                    },
                     icon: const Icon(Icons.remove_red_eye),
                   ),
                   labelText: AppString.confirmPassword,
@@ -143,7 +155,14 @@ class RegisterScreen extends StatelessWidget {
             ),
           ),
         ),
-      ),
+      );
+  },
+),
     );
   }
 }
+
+
+
+var unhiddenicon = const Icon(Icons.visibility);
+var hiddenicon = const Icon(Icons.visibility_off);

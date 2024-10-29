@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
-import '../../../data/app_data.dart';
+import '../../../data/local/app_data.dart';
 import 'home_screen_state.dart';
 
 class HomeScreenCubit extends Cubit<HomeScreenState> {

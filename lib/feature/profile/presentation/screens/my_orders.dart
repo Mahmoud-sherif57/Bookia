@@ -44,15 +44,15 @@ class MyOrders extends StatelessWidget {
                 width: 335,
                 height: 172,
                 decoration: BoxDecoration(
-                    color: AppColors.backGround,
-                    borderRadius: BorderRadius.circular(15),
-                    boxShadow: [
-                      BoxShadow(
-                        offset: const Offset(0, 8),
-                        color: AppColors.gray.withOpacity(0.5),
-                        blurRadius: 20,
-                      ),
-                    ],
+                  color: AppColors.backGround,
+                  borderRadius: BorderRadius.circular(15),
+                  boxShadow: [
+                    BoxShadow(
+                      offset: const Offset(0, 8),
+                      color: AppColors.gray.withOpacity(0.5),
+                      blurRadius: 20,
+                    ),
+                  ],
                 ),
                 child: Column(
                   children: [

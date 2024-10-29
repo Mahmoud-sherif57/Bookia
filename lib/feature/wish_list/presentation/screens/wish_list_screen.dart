@@ -69,7 +69,7 @@ class WishlistScreen extends StatelessWidget {
                                 Positioned(
                                   top: 10,
                                   left: 120,
-                                  child: Text(current.name),
+                                  child: Text(current.bookName),
                                 ),
 
                                 /// the book price

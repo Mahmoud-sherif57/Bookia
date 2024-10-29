@@ -2,6 +2,7 @@
 class AppString{
   static const String introSplash="Order Your Book Now!";
   static const String login="Login";
+  static const String logOut="Log Out";
   static const String register="Register";
   static const String loginWelcomeMessage="Welcome back! Glad to see you, Again!";
   static const String forgotPasswordMessage="Don't worry! It occurs. Please enter the email address linked with your account.";
