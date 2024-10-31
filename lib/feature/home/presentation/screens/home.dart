@@ -1,14 +1,15 @@
 import 'package:bookia_118/core/constants/app_strings.dart';
 import 'package:bookia_118/core/cubits/category_cubit/category_state.dart';
 import 'package:bookia_118/core/theming/styles.dart';
+import 'package:bookia_118/core/widgets/app_shimmer.dart';
 import 'package:bookia_118/data/local/app_data.dart';
-import 'package:bookia_118/feature/home/presentation/screens/book_details.dart';
 import 'package:bookia_118/feature/home/presentation/screens/notification.dart';
+import 'package:bookia_118/feature/home/presentation/screens/the_category_details_widget.dart';
 import 'package:bookia_118/feature/login/presentation/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:shimmer/shimmer.dart';
+
 import '../../../../core/constants/constants.dart';
 import '../../../../core/cubits/category_cubit/category_cubit.dart';
 import '../../../../core/functions/navigation.dart';
@@ -23,11 +24,6 @@ class HomeScreen extends StatelessWidget {
     // final categoryCubit = CategoryCubit.get(context);
     final categoryCubit = context.read<CategoryCubit>();
     var size = MediaQuery.of(context).size;
-    // return BlocConsumer<HomeScreenCubit, HomeScreenState>(
-    //   listener: (context, state) {},
-    //   builder: (context, state) {
-    //     var homeCubit = context.read<HomeScreenCubit>();
-
     return BlocConsumer<CategoryCubit, CategoryState>(
       listener: (context, state) {},
       builder: (context, state) {
@@ -85,9 +81,7 @@ class HomeScreen extends StatelessWidget {
                             Container(
                               margin: const EdgeInsets.only(top: 10),
                               width: 350,
-                              // width: size.width,
                               height: 150, //0.34
-                              // height: size.height * 0.20, //0.34
                               child: PageView.builder(
                                 pageSnapping: true,
                                 padEnds: true,
@@ -96,16 +90,7 @@ class HomeScreen extends StatelessWidget {
                                 itemCount: bannerList.length,
                                 itemBuilder: (context, index) {
                                   if (state is GetAllBooksLoading) {
-                                    return Shimmer.fromColors(
-                                      baseColor: Colors.grey[300]!,
-                                      highlightColor: Colors.grey[100]!,
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            color: Colors.white, borderRadius: BorderRadius.circular(8)),
-                                        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                                        height: 80,
-                                      ),
-                                    );
+                                    return const AppShimmer();
                                   } else {
                                     return Padding(
                                       padding: const EdgeInsets.all(8.0),
@@ -121,15 +106,27 @@ class HomeScreen extends StatelessWidget {
                                                     )
                                                   : const AssetImage('assets/images/aflaton.png')
                                                       as ImageProvider,
-                                              fit: BoxFit.cover,
+                                              fit: BoxFit.fill,
                                             ),
                                           ),
                                         ),
                                         Positioned(
-                                          bottom: 20,
+                                          bottom: 5,
                                           left: 10,
-                                          child: Text(bannerList[index].title ?? "",
-                                              overflow: TextOverflow.ellipsis, maxLines: 1),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: AppColors.beige,
+                                              borderRadius: BorderRadius.circular(7),
+                                            ),
+                                            child: Padding(
+                                              padding: const EdgeInsets.symmetric(horizontal: 5),
+                                              child: Text(
+                                                bannerList[index].title ?? "",
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 1,
+                                              ),
+                                            ),
+                                          ),
                                         )
                                       ]),
                                     );
@@ -137,7 +134,6 @@ class HomeScreen extends StatelessWidget {
                                 },
                               ),
                             ),
-                            // const SizedBox(height: 5),
 
                             ///-----------make the indicator------>
                             // Align(
@@ -164,9 +160,7 @@ class HomeScreen extends StatelessWidget {
                               color: AppColors.primary.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(8)),
                           width: 350,
-                          // width: size.width,
                           height: 100, //0.34
-                          // height: size.height * 0.20, //0.34
                           child: ListView.builder(
                             scrollDirection: Axis.horizontal,
                             shrinkWrap: true,
@@ -174,16 +168,7 @@ class HomeScreen extends StatelessWidget {
                             itemCount: categoryList.length,
                             itemBuilder: (context, index) {
                               if (state is GetAllBooksLoading) {
-                                return Shimmer.fromColors(
-                                  baseColor: Colors.grey[300]!,
-                                  highlightColor: Colors.grey[100]!,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        color: Colors.white, borderRadius: BorderRadius.circular(8)),
-                                    margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                                    height: 80,
-                                  ),
-                                );
+                                return const AppShimmer();
                               } else {
                                 return Padding(
                                   padding: const EdgeInsets.all(5.0),
@@ -192,14 +177,19 @@ class HomeScreen extends StatelessWidget {
                                       Expanded(
                                         child: InkWell(
                                           onTap: () {},
-                                          child: CircleAvatar(
-                                            backgroundImage: categoryList[index].image != null
-                                                ? NetworkImage(
-                                                    categoryList[index].image!,
-                                                  )
-                                                : const AssetImage('assets/images/aflaton.png')
-                                                    as ImageProvider,
-                                            radius: 35,
+                                          child: Container(
+                                            width: 70,
+                                            height: 70,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              image: DecorationImage(
+                                                image: categoryList[index].image != null
+                                                    ? NetworkImage(categoryList[index].image!)
+                                                    : const AssetImage('assets/images/aflaton.png')
+                                                        as ImageProvider,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -231,127 +221,12 @@ class HomeScreen extends StatelessWidget {
                               childAspectRatio: 0.54, crossAxisCount: 2),
                           itemBuilder: (context, index) {
                             if (state is GetAllBooksLoading) {
-                              return Shimmer.fromColors(
-                                baseColor: Colors.grey[300]!,
-                                highlightColor: Colors.grey[100]!,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      color: Colors.white, borderRadius: BorderRadius.circular(8)),
-                                  margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                                  height: 80,
-                                ),
-                              );
+                              return const AppShimmer();
                             } else {
                               BookModel current = booksListData[index];
-                              return Padding(
-                                padding: const EdgeInsets.all(5.0),
-                                child: Container(
-                                  width: 162,
-                                  height: 280,
-                                  decoration: BoxDecoration(
-                                    color: AppColors.beige,
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
-                                  child: Stack(
-                                    children: [
-                                      Column(
-                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                        children: [
-                                          ///---------the image---------->
-                                          InkWell(
-                                            onTap: () {
-                                              AppFunctions.navigateTo(
-                                                  context, BookDetails(data: booksListData[index]));
-                                            },
-                                            child: Container(
-                                              width: 140,
-                                              height: 220, //
-                                              margin: const EdgeInsets.all(10),
-                                              decoration: BoxDecoration(
-                                                image: DecorationImage(
-                                                  image: booksListData[index].imageUrl != null
-                                                      ? NetworkImage(
-                                                          booksListData[index].imageUrl!,
-                                                        )
-                                                      : const AssetImage('assets/images/aflaton.png')
-                                                          as ImageProvider,
-                                                  fit: BoxFit.cover,
-                                                ),
-                                                borderRadius: BorderRadius.circular(15),
-                                              ),
-                                            ),
-                                          ),
-
-                                          ///---------add name of the item---------->
-                                          Text(
-                                            current.bookName ?? "",
-                                            // "Adham sharkawy",
-                                            style: font18RegularDark.copyWith(fontSize: 15),
-                                          ),
-
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                            children: [
-                                              ///---------add price of the item---------->
-                                              Text(
-                                                "${current.price} \$",
-                                                style: font18RegularDark,
-                                              ),
-
-                                              ///---------the buy button------->
-                                              InkWell(
-                                                onTap: () {
-                                                  categoryCubit.toggleCart(current, context);
-                                                },
-                                                child: Container(
-                                                  width: 72,
-                                                  height: 28,
-                                                  decoration: BoxDecoration(
-                                                    color: AppColors.green,
-                                                    // color:current.isOnTheCart! ? AppColors.green : AppColors.black,
-                                                    borderRadius: BorderRadius.circular(4),
-                                                  ),
-                                                  child: Center(
-                                                    child: Text(
-                                                      AppString.buy,
-                                                      style: font15RegularWhite,
-                                                      textAlign: TextAlign.center,
-                                                    ),
-                                                  ),
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-
-                                      ///------------the favorite icon--------->
-                                      Positioned(
-                                        right: 1,
-                                        child: CircleAvatar(
-                                          foregroundColor: AppColors.primary,
-                                          radius: 17,
-                                          backgroundColor: AppColors.beige,
-                                          child: Center(
-                                            child: IconButton(
-                                              onPressed: () {
-                                                categoryCubit.toggleFavourite(current, context);
-                                              },
-                                              icon: SizedBox(
-                                                width: 20,
-                                                height: 20,
-                                                child: current.isInTheWishList!
-                                                    ? favouriteIcon
-                                                    : notFavouriteIcon,
-                                              ),
-                                              iconSize: 20,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                              return TheCategoryDetailsWidget(
+                                current: current,
+                                index: index,
                               );
                             }
                           },
@@ -369,18 +244,17 @@ class HomeScreen extends StatelessWidget {
   }
   // );
 }
-// }
 
 var notFavouriteIcon = const Icon(Icons.favorite_outline_sharp);
 var favouriteIcon = const Icon(
   Icons.favorite,
   color: AppColors.red,
 );
-var notOnTheCartIcon = const Icon(
-  Icons.add_shopping_cart_sharp,
-  color: AppColors.primary,
-);
-var onTheCartIcon = const Icon(
-  Icons.add_shopping_cart_sharp,
-  color: AppColors.green,
-);
+// var notOnTheCartIcon = const Icon(
+//   Icons.add_shopping_cart_sharp,
+//   color: AppColors.primary,
+// );
+// var onTheCartIcon = const Icon(
+//   Icons.add_shopping_cart_sharp,
+//   color: AppColors.green,
+// );

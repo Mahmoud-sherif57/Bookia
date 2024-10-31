@@ -7,4 +7,5 @@ class EndPoints {
   static const forgotPassword = 'forget_password';
   static const verifyCode = 'verify_code';
   static const updatePassword = 'update_password';
+  static const search = 'search';
 }

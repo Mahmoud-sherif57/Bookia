@@ -75,7 +75,7 @@ class _BookDetailsState extends State<BookDetails> {
                         Text(current.bookName??"", style: font24RegularDark),
                         const SizedBox(height: 11),
 
-                        ///-----the author name of the book----->
+                        ///-----the category of the book----->
                         Text(
                           current.categoryName ??"",
                           style: font15RegularGray.copyWith(color: AppColors.primary),
@@ -83,12 +83,14 @@ class _BookDetailsState extends State<BookDetails> {
                         const SizedBox(height: 11),
 
                         ///-----the summary of the book----->
-                        const Text(
-                          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+                         Text(
+                          " add the summary of the book ⤵",
+                          style: font15RegularGray.copyWith(color: AppColors.black),
+
                           textAlign: TextAlign.justify,
                         ),
                         const Text(
-                          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+                          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do usermod temper incident ut labor et do lore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
                           textAlign: TextAlign.justify,
                         ),
                       ],

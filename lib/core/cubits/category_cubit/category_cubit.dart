@@ -16,7 +16,10 @@ class CategoryCubit extends Cubit<CategoryState> {
 
   List itemsInWishList = [];
   List itemsInCart = [];
-
+  List<BookModel> itemsInSearch = [];
+  ///=>> if i used it >> after finishing search the home page show the items on search  >> fix it ⤵⤵
+  // List<BookModel> itemsInSearch = booksListData;
+  TextEditingController searchController = TextEditingController();
 
   ///-------OnRefresh function-------->
   Future<void> onRefresh() async {
@@ -36,27 +39,34 @@ class CategoryCubit extends Cubit<CategoryState> {
       endPoint: EndPoints.home,
       withToken: true,
     ).then((value) {
+      ///-------save data in the sliders List ---->
       bannerList.clear();
       // to store the api data in the banner list( bannerList)
       for (var element in value.data["data"]["sliders"]) {
         SliderModel sliders = SliderModel.fromJson(element);
         bannerList.add(sliders);
       }
+
+      ///-------save data in the books List ---->
       booksListData.clear();
       // to store the api data in the book list( bookListData)
       for (var element in value.data["data"]["books"]) {
         BookModel book = BookModel.fromJson(element);
         booksListData.add(book);
       }
+
+      ///-------save data in the category List ---->
       categoryList.clear();
       // to store the api data in the category list( categoryList)
       for (var element in value.data["data"]["categories"]) {
         CategoriesModel category = CategoriesModel.fromJson(element);
+
         categoryList.add(category);
       }
-
       emit(GetAllBooksSuccess());
       // debugPrint(value.data["data"].toString());
+      debugPrint("length of booksListData ${booksListData.length.toString()}");
+      debugPrint("length of itemsInSearch ${itemsInSearch.length.toString()}");
     }).catchError((error) {
       if (error is DioException) {
         // debugPrint(error.message.toString());
@@ -70,6 +80,57 @@ class CategoryCubit extends Cubit<CategoryState> {
     });
   }
 
+  ///------the search function---------->
+  Future<void> categoryInSearch(String value) async {
+    emit(GetAllBooksLoading());
+    await DioHelper.get(
+      endPoint: EndPoints.search,
+      params: {"input": value},
+    ).then((value) {
+      ///-------save data in the category List ---->
+      itemsInSearch.clear();
+      // to store the api data in the book list( bookListData)
+      for (var element in value.data["data"]) {
+        BookModel bookInSearch = BookModel.fromJson(element);
+        itemsInSearch.add(bookInSearch);
+      }
+
+
+      debugPrint("length of booksListData ${booksListData.length.toString()}");
+      debugPrint("length of itemsInSearch ${itemsInSearch.length.toString()}");
+
+
+      emit(GetAllBooksSuccess());
+    }).catchError((error) {
+      if (error is DioException) {
+        emit(GetAllBooksFailed(error.response.toString()));
+        return ;
+      }
+      emit(GetAllBooksFailed("can not find your book "));
+      throw error;
+    });
+    // emit(GetAllBooksSuccess());
+    // itemsInSearch = booksListData.where((element)=> element.bookName!.contains(value)).toList();
+  }
+
+  ///------cancel search function---------->
+  void canselTheSearch() {
+    searchController.clear();
+    itemsInSearch = [];
+    emit(ItemRemovedSuccessfully());
+    debugPrint("length of booksListData ${booksListData.length.toString()}");
+    debugPrint("length of itemsInSearch ${itemsInSearch.length.toString()}");
+  }
+
+  ///
+  ///
+  ///
+  ///
+  ///
+  ///
+  ///
+  ///
+  ///
   ///------------------addToFavouriteFunction---------->
   void addToFavourite(BookModel data, BuildContext context) {
     itemsInWishList.add(data);

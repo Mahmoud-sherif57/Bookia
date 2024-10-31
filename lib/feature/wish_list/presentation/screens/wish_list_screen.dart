@@ -14,9 +14,7 @@ class WishlistScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery
-        .of(context)
-        .size;
+    var size = MediaQuery.of(context).size;
     final categoryCubit = context.read<CategoryCubit>();
     return SafeArea(
       child: BlocConsumer<CategoryCubit, CategoryState>(
@@ -32,113 +30,115 @@ class WishlistScreen extends StatelessWidget {
                   child: Column(
                     children: [
                       const ReusablePageName(text: AppString.wishlist),
-                      const SizedBox(
-                        height: 10,
-                      ),
+                      const SizedBox(height: 10),
                       Expanded(
-                        child: categoryCubit.itemsInWishList.isNotEmpty?
-                        ListView.builder(
-                          shrinkWrap: true,
-                          physics: const BouncingScrollPhysics(),
-                          itemCount: categoryCubit.itemsInWishList.length,
-                          itemBuilder: (context, index) {
-                            var current = categoryCubit.itemsInWishList[index];
-                            return Container(
-                              decoration: BoxDecoration(
-                                color: AppColors.beige,
-                                borderRadius: BorderRadius.circular(20),
+                        child: categoryCubit.itemsInWishList.isNotEmpty
+                            ? ListView.builder(
+                                shrinkWrap: true,
+                                physics: const BouncingScrollPhysics(),
+                                itemCount: categoryCubit.itemsInWishList.length,
+                                itemBuilder: (context, index) {
+                                  var current = categoryCubit.itemsInWishList[index];
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                      color: AppColors.beige,
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    margin: const EdgeInsets.all(5),
+                                    child: Stack(children: [
+                                      /// the book image
+                                      Container(
+                                        width: 100,
+                                        height: 120,
+                                        margin: const EdgeInsets.all(5),
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                            image: current.imageUrl != null
+                                                ? NetworkImage(current.imageUrl!)
+                                                : const AssetImage('assets/images/aflaton.png')
+                                                    as ImageProvider,
+                                            fit: BoxFit.cover,
+                                          ),
+                                          borderRadius: BorderRadius.circular(15),
+                                        ),
+                                      ),
+
+                                      /// the book name,
+                                      Positioned(
+                                        top: 10,
+                                        left: 120,
+                                        child: Text(current.bookName),
+                                      ),
+
+                                      /// the book price
+                                      Positioned(
+                                        top: 40,
+                                        left: 120,
+                                        child: Text(
+                                          "${current.price.toString()} \$",
+                                          style: font18RegularDark.copyWith(fontSize: 16),
+                                        ),
+                                      ),
+
+                                      /// the remove icon
+                                      Positioned(
+                                        top: 10,
+                                        right: 10,
+                                        child: InkWell(
+                                          child: SvgPicture.asset(
+                                            AppImages.deleteIconSVG,
+                                            fit: BoxFit.cover,
+                                          ),
+                                          onTap: () {
+                                            categoryCubit.deleteFromFavourite(current);
+                                          },
+                                        ),
+                                      ),
+
+                                      /// the addToCart Button
+                                      Positioned(
+                                        bottom: 10,
+                                        right: 25,
+                                        child: InkWell(
+                                          onTap: () {
+                                            categoryCubit.toggleCart(current, context);
+                                          },
+                                          child: Container(
+                                            width: 180,
+                                            height: 40,
+                                            alignment: Alignment.center,
+                                            decoration: BoxDecoration(
+                                              color: AppColors.primary,
+                                              borderRadius: BorderRadius.circular(8),
+                                            ),
+                                            child: Text(
+                                              "add To Cart",
+                                              // current.isOnTheCart? AppString.inTheCart : AppString.addToCart,
+                                              style: font15RegularWhite,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ]),
+                                  );
+                                },
+                              )
+                            : Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  // Lottie.asset("assets/animations/empty_lottie_2.json"),
+
+                                  // Image(
+                                  //   // image: AssetImage(AppAssets.emptyLogo),
+                                  //   fit: BoxFit.cover,
+                                  // ),
+
+                                  Text(
+                                    "Your wish list is empty right now",
+                                    style: font20RegularDark,
+                                  ),
+                                ],
                               ),
-                              margin: const EdgeInsets.all(5),
-                              child: Stack(children: [
-
-                                /// the book image
-                                Container(
-                                  width: 100,
-                                  height: 120,
-                                  margin: const EdgeInsets.all(5),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(15),
-                                    image: DecorationImage(
-                                      fit: BoxFit.cover,
-                                      image: AssetImage(current.imageUrl),
-                                    ),
-                                  ),
-                                ),
-
-                                /// the book name,
-                                Positioned(
-                                  top: 10,
-                                  left: 120,
-                                  child: Text(current.bookName),
-                                ),
-
-                                /// the book price
-                                Positioned(
-                                  top: 40,
-                                  left: 120,
-                                  child: Text(
-                                    "${current.price.toString()} \$",
-                                    style: font18RegularDark.copyWith(fontSize: 16),
-                                  ),
-                                ),
-
-                                /// the remove icon
-                                Positioned(
-                                  top: 10,
-                                  right: 10,
-                                  child: InkWell(
-                                    child: SvgPicture.asset(
-                                      AppImages.deleteIconSVG,
-                                      fit: BoxFit.cover,
-                                    ),
-                                    onTap: () {
-                                      categoryCubit.deleteFromFavourite(current);
-                                    },
-                                  ),
-                                ),
-
-                                /// the addToCart Button
-                                Positioned(
-                                  bottom: 10,
-                                  right: 25,
-                                  child: InkWell(
-                                    onTap: () {
-                                      categoryCubit.toggleCart(current, context);
-                                    },
-                                    child: Container(
-                                      width: 180,
-                                      height: 40,
-                                      alignment: Alignment.center,
-                                      decoration: BoxDecoration(
-                                        color: AppColors.primary,
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: Text(
-                                        current.isOnTheCart? AppString.inTheCart : AppString.addToCart,
-                                        style: font15RegularWhite,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ]),
-                            );
-                          },
-                        ): Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            // Lottie.asset("assets/animations/empty_lottie_2.json"),
-
-                            // Image(
-                            //   // image: AssetImage(AppAssets.emptyLogo),
-                            //   fit: BoxFit.cover,
-                            // ),
-
-                            Text(
-                              "Your wish list is empty right now",
-                              style: font20RegularDark,
-                            ),
-                          ],
-                        ),
                       ),
                     ],
                   ),
