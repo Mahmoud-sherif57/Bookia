@@ -3,6 +3,7 @@ import 'package:bookia_118/core/theming/app_colors.dart';
 import 'package:bookia_118/core/theming/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../core/constants/constants.dart';
 import '../../../../core/cubits/category_cubit/category_cubit.dart';
@@ -14,11 +15,24 @@ class WishlistScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
     final categoryCubit = context.read<CategoryCubit>();
+    categoryCubit.getBooksInWishList();
+    var size = MediaQuery.of(context).size;
     return SafeArea(
       child: BlocConsumer<CategoryCubit, CategoryState>(
-        listener: (context, state) {},
+        listener: (context, state) {
+          if (state is GetFavouriteSuccessState) {
+            // EasyLoading.showSuccess('');
+            EasyLoading.dismiss();
+
+          } else if (state is GetFavouriteFailedState) {
+            // EasyLoading.showError('Failed to LogIn');
+            EasyLoading.showError(state.error);
+            EasyLoading.dismiss();
+          } else if (state is GetFavouriteLoadingState) {
+            EasyLoading.show(status: "loading..");
+          }
+        },
         builder: (context, state) {
           return Scaffold(
             backgroundColor: AppColors.backGround,
@@ -90,7 +104,6 @@ class WishlistScreen extends StatelessWidget {
                                             fit: BoxFit.cover,
                                           ),
                                           onTap: () {
-                                            categoryCubit.deleteFromFavourite(current);
                                           },
                                         ),
                                       ),
@@ -126,13 +139,6 @@ class WishlistScreen extends StatelessWidget {
                             : Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  // Lottie.asset("assets/animations/empty_lottie_2.json"),
-
-                                  // Image(
-                                  //   // image: AssetImage(AppAssets.emptyLogo),
-                                  //   fit: BoxFit.cover,
-                                  // ),
-
                                   Text(
                                     "Your wish list is empty right now",
                                     style: font20RegularDark,

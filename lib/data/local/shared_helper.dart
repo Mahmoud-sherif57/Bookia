@@ -34,6 +34,4 @@ class SharedHelper {
   static Future<bool> clear({required String key}) async {
     return await _prefs.clear();
   }
-
-
 }

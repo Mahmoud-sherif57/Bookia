@@ -17,6 +17,8 @@ class CategoryCubit extends Cubit<CategoryState> {
   List itemsInWishList = [];
   List itemsInCart = [];
   List<BookModel> itemsInSearch = [];
+  List<BookModel> booksByCategory = [];
+
   ///=>> if i used it >> after finishing search the home page show the items on search  >> fix it ⤵⤵
   // List<BookModel> itemsInSearch = booksListData;
   TextEditingController searchController = TextEditingController();
@@ -81,7 +83,7 @@ class CategoryCubit extends Cubit<CategoryState> {
   }
 
   ///------the search function---------->
-  Future<void> categoryInSearch(String value) async {
+  Future<void> booksInSearch(String value) async {
     emit(GetAllBooksLoading());
     await DioHelper.get(
       endPoint: EndPoints.search,
@@ -95,16 +97,14 @@ class CategoryCubit extends Cubit<CategoryState> {
         itemsInSearch.add(bookInSearch);
       }
 
-
       debugPrint("length of booksListData ${booksListData.length.toString()}");
       debugPrint("length of itemsInSearch ${itemsInSearch.length.toString()}");
-
 
       emit(GetAllBooksSuccess());
     }).catchError((error) {
       if (error is DioException) {
         emit(GetAllBooksFailed(error.response.toString()));
-        return ;
+        return;
       }
       emit(GetAllBooksFailed("can not find your book "));
       throw error;
@@ -121,6 +121,110 @@ class CategoryCubit extends Cubit<CategoryState> {
     debugPrint("length of booksListData ${booksListData.length.toString()}");
     debugPrint("length of itemsInSearch ${itemsInSearch.length.toString()}");
   }
+
+  ///------the getBookByCategory function---------->
+  Future<void> getBookByCategory(num? categoryId) async {
+    emit(GetBooksByCategoryIdLoading());
+    await DioHelper.get(
+      endPoint: "get_books_by_category_id/$categoryId",
+    ).then((value) {
+      ///-------save data in the booksByCategory list ---->
+      booksByCategory.clear();
+      // to store the api data in the book list( booksByCategory)
+      for (var element in value.data["data"]) {
+        BookModel book = BookModel.fromJson(element);
+        booksByCategory.add(book);
+      }
+      debugPrint(value.data.toString());
+      emit(GetBooksByCategoryIdSuccess());
+    }).catchError((error) {
+      if (error is DioException) {
+        emit(GetBooksByCategoryIdFailed(error.response?.data.toString() ?? ""));
+        return;
+      }
+      emit(GetBooksByCategoryIdFailed("can't get your order"));
+      throw error;
+    });
+
+    // for (var element in value.data["data"]) {
+    //   BookModel bookInSearch = BookModel.fromJson(element).categoryId;
+    //   itemsInSearch.add(bookInSearch);
+    // }
+    // CategoriesModel current = categoryList[index].categoryId ;
+  }
+
+  ///--------toggle favourite--------------->
+  Future<void> toggleFavorite(num? bookId) async {
+    // emit(ToggleFavouriteState());
+    // emit(ToggleFavouriteLoading());
+    await DioHelper.get(
+      endPoint: "toggle_wishlist/$bookId",
+      withToken: true,
+    ).then((value) {
+      debugPrint(value.data.toString());
+      // emit(ToggleFavouriteSuccess());
+      emit(ToggleFavouriteState());
+    }).catchError((error) {
+      if (error is DioException) {
+        debugPrint(error.response.toString());
+        // emit(ToggleFavouriteFailed());
+        return;
+      }
+      // emit(ToggleFavouriteFailed());
+      debugPrint(error.response.toString());
+      throw error;
+    });
+  }
+
+  ///---------getBooksInWishList---------->
+  Future<void> getBooksInWishList() async {
+    emit(GetFavouriteLoadingState());
+    await DioHelper.get(
+      endPoint: EndPoints.wishLists,
+      withToken: true,
+    ).then((value) {
+      itemsInWishList.clear();
+      for (var element in value.data["data"]) {
+        BookModel book = BookModel.fromJson(element);
+        itemsInWishList.add(book);
+      }
+
+      emit(GetFavouriteSuccessState());
+      debugPrint(value.data.toString());
+    }).catchError((error) {
+      if (error is DioException) {
+        emit(GetFavouriteFailedState(error.response.toString()));
+        debugPrint(error.response.toString());
+        return;
+      }
+      emit(GetFavouriteFailedState(error.response.toString()));
+      debugPrint(error.response.toString());
+    });
+  }
+
+  ///-----------show books function--------->
+  // Future<void> showBooks(num bookId) async {
+  //   await DioHelper.get(endPoint: "books/$bookId").then((value) {
+  //     for (var element in value.data["data"]) {
+  //       BookModel book = BookModel.fromJson(element);
+  //       booksListData.add(book);
+  //     }
+  //   }).catchError((error) {
+  //     if (error is DioException) {
+  //       debugPrint(error.response.toString() ?? "hi hi ");
+  //       emit(GetAllBooksFailed(error.response?.data["message"] ?? "can not get your order"));
+  //       return;
+  //     }
+  //     debugPrint(error.response?.toString());
+  //     emit(GetAllBooksFailed("can not get your order "));
+  //     throw error;
+  //   });
+  // }
+
+
+
+
+
 
   ///
   ///
@@ -143,12 +247,12 @@ class CategoryCubit extends Cubit<CategoryState> {
     data.isInTheWishList;
     // if i increased the value(quantity) and removed the item from the list the value still increased..
     // to solve this problem when i tap on close. the value will be reset to 1..
-    emit(RemovedFromFavoritesState());
+    emit(ToggleFavouriteSuccess());
   }
 
   ///----------toggle favourite--------->
   toggleFavourite(BookModel data, BuildContext context) {
-    emit(FavouriteLoadingState());
+    emit(ToggleFavouriteLoading());
     data.isInTheWishList = !data.isInTheWishList!;
     if (data.isInTheWishList!) {
       addToFavourite(data, context);

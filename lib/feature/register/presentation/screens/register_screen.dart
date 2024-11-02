@@ -151,8 +151,7 @@ class RegisterScreen extends StatelessWidget {
                       text1: AppString.alreadyHaveAnAccount,
                       text2: AppString.loginNow,
                       onPressed: () {
-                        if (state is AuthLoadingState) return;
-                        authCubit.register();
+                        AppFunctions.navigateTo(context, LoginScreen());
                       },
                     )
                   ],

@@ -19,6 +19,7 @@ class AuthCubit extends Cubit<AuthState> {
   TextEditingController phoneController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
+  TextEditingController newPasswordController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   TextEditingController otpController1 = TextEditingController();
@@ -72,8 +73,8 @@ class AuthCubit extends Cubit<AuthState> {
       emit(AuthSuccessState(value.data["message"]));
     }).catchError((error) {
       if (error is DioException) {
-        debugPrint(error.response?.statusMessage);
-        emit(AuthFailedState(error.response?.statusMessage ?? "something went wrong in login"));
+        debugPrint(error.response?.toString());
+        emit(AuthFailedState(error.response?.data?["message"] ?? "something went wrong in login"));
         return;
       }
       emit(AuthFailedState(" unknown error"));
@@ -153,9 +154,9 @@ class AuthCubit extends Cubit<AuthState> {
     });
   }
 
-  ///---------update Password Function--------------->
+  ///---------reset Password Function--------------->
 
-  Future<void> updatePassword() async {
+  Future<void> resetPassword() async {
     emit(AuthLoadingState());
     await DioHelper.post(
       endPoint: EndPoints.updatePassword,
@@ -174,6 +175,61 @@ class AuthCubit extends Cubit<AuthState> {
         return;
       }
       emit(AuthFailedState(" unknown error"));
+    });
+  }
+
+  ///---------update profile Function--------------->
+
+  Future<void> updateProfile() async {
+    emit(UpdateProfileLoadingState());
+    await DioHelper.post(
+      endPoint: EndPoints.updateProfile,
+      withToken: true,
+      body: {
+        "name": nameController.text,
+        "email": emailController.text,
+        "image": "",
+        "address": addressController.text,
+      },
+    ).then((value) {
+      debugPrint(value.data.toString());
+      emit(UpdateProfileSuccessState(value.data["message"]));
+    }).catchError(( error){
+      if(error is DioException){
+        debugPrint(error.response?.data?["message"]);
+        emit(UpdateProfileFailedState(error.response?.data?["message"]));
+      return ;
+      }
+      debugPrint(error.response?.data?["message"]);
+      emit(UpdateProfileFailedState(" unknown error"));
+
+    });
+  }
+
+  ///---------update profile Function--------------->
+
+  Future<void> updatePassword() async {
+    emit(UpdatePasswordLoadingState());
+    await DioHelper.post(
+      endPoint: EndPoints.resetPassword,
+      withToken: true,
+      body: {
+        "current_password": passwordController.text,
+        "new_password":newPasswordController.text,
+        "confirm_password": confirmPasswordController.text,
+      },
+    ).then((value) {
+      debugPrint(value.data.toString());
+      emit(UpdatePasswordSuccessState(value.data["message"]));
+    }).catchError(( error){
+      if(error is DioException){
+        debugPrint(error.response?.data?["message"]);
+        emit(UpdatePasswordFailedState(error.response?.data?["message"]));
+        return ;
+      }
+      debugPrint(error.response?.data?["message"]);
+      emit(UpdatePasswordFailedState(" unknown error"));
+
     });
   }
 }

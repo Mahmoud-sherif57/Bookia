@@ -106,6 +106,7 @@ class OtpVerification extends StatelessWidget {
                     onPressed: () {
                       // to prevent the user from calling the api while loading ⤵
                       if (state is AuthLoadingState) return;
+                      // if the OTP code didn't received i call the endPoint again .
                       authCubit.forgotPassword();
                     },
                   )

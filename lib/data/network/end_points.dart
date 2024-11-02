@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 class EndPoints {
   static const baseUrl = 'http://bookia.leaderfortrans.com/api/';
   static const login = 'login';
@@ -8,4 +10,18 @@ class EndPoints {
   static const verifyCode = 'verify_code';
   static const updatePassword = 'update_password';
   static const search = 'search';
+  static const getBooksByCategoryId = 'get_books_by_category_id/';
+  static const toggleWishList = 'toggle_wishlist';
+  static const wishLists = 'wishlists';
+  static const showBook = 'books';
+  static const getProfile = 'profile';
+  static const updateProfile = 'update_profile';
+  static const resetPassword = 'reset_password';
+  static const viewCart = 'cart';
+  static const addToCart = 'add_to_cart';
+  static const removeFromCart = 'remove_from_cart';
+  static const checkCoupon = 'check_coupon';
+  static const calckShipping = 'calck_shipping';
+  static const viewAllOrders = 'orders';
+  static const checkOut = 'checkout';
 }

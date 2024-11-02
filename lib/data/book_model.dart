@@ -7,7 +7,7 @@ class BookModel {
   String? price;
   String? offer;
   bool? isInTheWishList;
-  bool? isOnTheCart;
+  // bool? isOnTheCart;
 
   BookModel({
     required this.categoryId,
@@ -18,7 +18,7 @@ class BookModel {
     required this.price,
     required this.offer,
     this.isInTheWishList = false,
-    this.isOnTheCart = false,
+    // this.isOnTheCart = false,
   });
 
   // this named constructor to turn the data that comes from API from json to object

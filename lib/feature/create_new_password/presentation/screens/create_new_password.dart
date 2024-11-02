@@ -40,11 +40,11 @@ class CreateNewPassword extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(
-                    height: 25,
+                    height: 25
                   ),
                   const AppBackButton(),
                   const SizedBox(
-                    height: 28,
+                    height: 28
                   ),
 
                   ///------------the create new password message---------->
@@ -68,11 +68,13 @@ class CreateNewPassword extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(
-                    height: 32,
+                    height: 32
                   ),
 
                   ///------------the new password field---------->
                   ReusableTextFormField(
+                    controller: authCubit.passwordController,
+                    keyboardType: TextInputType.text,
                     hintText: "",
                     labelText: AppString.newPassword,
                     obscureText: authCubit.hidden,
@@ -85,6 +87,8 @@ class CreateNewPassword extends StatelessWidget {
 
                   ///-----------the confirm password field---------->
                   ReusableTextFormField(
+                    controller: authCubit.confirmPasswordController,
+                    keyboardType: TextInputType.text,
                     hintText: "",
                     labelText: AppString.confirmPassword,
                     suffixIcon: IconButton(
@@ -94,14 +98,14 @@ class CreateNewPassword extends StatelessWidget {
                     obscureText: authCubit.hidden,
                   ),
                   const SizedBox(
-                    height: 38,
+                    height: 38
                   ),
 
                   ///------------the reset password button---------->
                   Center(
                     child: MainButton(
                       onTap: () {
-                        AppFunctions.navigateTo(context, const PasswordChanged());
+                        authCubit.resetPassword();
                       },
                       title: AppString.resetPassword,
                     ),

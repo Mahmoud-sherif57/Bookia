@@ -5,3 +5,6 @@ import '../book_model.dart';
 List<SliderModel> bannerList = [];
 List<CategoriesModel> categoryList = [];
 List<BookModel> booksListData = [];
+
+
+

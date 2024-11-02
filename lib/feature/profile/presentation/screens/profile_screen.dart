@@ -1,6 +1,7 @@
 import 'package:bookia_118/core/functions/navigation.dart';
 import 'package:bookia_118/feature/login/presentation/screens/login_screen.dart';
 import 'package:bookia_118/feature/profile/presentation/screens/my_orders.dart';
+import 'package:bookia_118/feature/profile/presentation/screens/preview_user_info.dart';
 import 'package:bookia_118/feature/profile/presentation/screens/reset_password.dart';
 import 'package:bookia_118/feature/profile/presentation/screens/update_profie.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +13,7 @@ import '../../../../core/cubits/auth_cubit/auth_state.dart';
 import '../../../../core/theming/app_colors.dart';
 import '../../../../core/theming/styles.dart';
 import '../../../../core/widgets/reusable_page_name.dart';
-import '../../../../core/widgets/setting_profile_field.dart';
+import '../../../../core/widgets/setting_profile_field_widget.dart';
 import 'package:animate_do/animate_do.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -56,13 +57,18 @@ class ProfileScreen extends StatelessWidget {
                       ///-------user information------>
                       Row(
                         children: [
-                          const CircleAvatar(
-                            backgroundColor: AppColors.primary,
-                            radius: 35,
-                            child: Icon(
-                              Icons.person,
-                              size: 50,
-                              color: AppColors.ivory,
+                          InkWell(
+                            onTap: () {
+                              AppFunctions.navigateTo(context, const PreviewUserInfo());
+                            },
+                            child: const CircleAvatar(
+                              backgroundColor: AppColors.primary,
+                              radius: 35,
+                              child: Icon(
+                                Icons.person,
+                                size: 50,
+                                color: AppColors.ivory,
+                              ),
                             ),
                           ),
                           const SizedBox(width: 15),

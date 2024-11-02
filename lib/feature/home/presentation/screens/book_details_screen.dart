@@ -62,7 +62,7 @@ class _BookDetailsState extends State<BookDetails> {
                             ],
                             borderRadius: BorderRadius.circular(15),
                             image: DecorationImage(
-                              image:  current.imageUrl != null
+                              image: current.imageUrl != null
                                   ? NetworkImage(current.imageUrl!)
                                   : const AssetImage('assets/images/aflaton.png') as ImageProvider,
                               fit: BoxFit.cover,
@@ -72,21 +72,21 @@ class _BookDetailsState extends State<BookDetails> {
                         const SizedBox(height: 11),
 
                         ///-----the name of the book----->
-                        Text(current.bookName??"", style: font24RegularDark),
+                        Text(current.bookName ?? "", style: font24RegularDark),
+
                         const SizedBox(height: 11),
 
                         ///-----the category of the book----->
                         Text(
-                          current.categoryName ??"",
+                          current.categoryName ?? "",
                           style: font15RegularGray.copyWith(color: AppColors.primary),
                         ),
                         const SizedBox(height: 11),
 
                         ///-----the summary of the book----->
-                         Text(
+                        Text(
                           " add the summary of the book ⤵",
                           style: font15RegularGray.copyWith(color: AppColors.black),
-
                           textAlign: TextAlign.justify,
                         ),
                         const Text(
@@ -109,14 +109,13 @@ class _BookDetailsState extends State<BookDetails> {
                     ///-----the add to cart button----->
                     MainButton(
                       onTap: () {
+                        /// TODO: add cubit (add to cart)
                         // categoryCubit.toggleCart(current, context);
                       },
                       width: 180,
                       color: AppColors.black,
-                      title:  AppString.addToCart,
+                      title: AppString.addToCart,
                       // title: current.isOnTheCart! ? AppString.inTheCart : AppString.addToCart,
-
-                      /// TODO: add cubit
                     )
                   ],
                 )

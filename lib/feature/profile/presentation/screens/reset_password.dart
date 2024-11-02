@@ -6,12 +6,30 @@ import 'package:bookia_118/core/widgets/app_back_button.dart';
 import 'package:bookia_118/core/widgets/main_button.dart';
 import 'package:bookia_118/core/widgets/reusable_text_form_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+
+import '../../../../core/cubits/auth_cubit/auth_cubit.dart';
+import '../../../../core/cubits/auth_cubit/auth_state.dart';
 
 class ResetPassword extends StatelessWidget {
   const ResetPassword({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final authCubit = AuthCubit.get(context);
+    return BlocConsumer<AuthCubit, AuthState>(
+  listener: (context, state) {
+    if (state is UpdatePasswordSuccessState) {
+      EasyLoading.showSuccess(" ${state.msg}");
+    } else if (state is UpdatePasswordFailedState) {
+      EasyLoading.showError(state.error);
+      EasyLoading.dismiss();
+    } else if (state is UpdatePasswordLoadingState) {
+      EasyLoading.show(status: "loading..");
+    }
+  },
+  builder: (context, state) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: AppColors.backGround,
@@ -22,7 +40,7 @@ class ResetPassword extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(
-                height: 25,
+                height: 25
               ),
               const AppBackButton(),
               const SizedBox(
@@ -38,10 +56,11 @@ class ResetPassword extends StatelessWidget {
                 ),
               ),
               const SizedBox(
-                height: 44,
+                height: 44
               ),
               ///------------the current password field---------->
-              const ReusableTextFormField(
+               ReusableTextFormField(
+                controller: authCubit.passwordController,
                 hintText: "",
                 labelText: AppString.currentPassword,
                 // suffixIcon: IconButton(
@@ -53,33 +72,36 @@ class ResetPassword extends StatelessWidget {
               const SizedBox(height: 26),
               ///-----------the new password field---------->
               ReusableTextFormField(
+                controller: authCubit.newPasswordController,
                 hintText: "",
                 labelText: AppString.newPassword,
-                suffixIcon: IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.remove_red_eye),
-                ),
-                obscureText: true,
+                // suffixIcon: IconButton(
+                //   onPressed: () {},
+                //   icon: const Icon(Icons.remove_red_eye),
+                // ),
+                obscureText: false,
               ),
               const SizedBox(height: 26),
               ///-----------the confirm password field---------->
               ReusableTextFormField(
+                controller: authCubit.confirmPasswordController,
                 hintText: "",
                 labelText: AppString.confirmPassword,
-                suffixIcon: IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.remove_red_eye),
-                ),
-                obscureText: true,
+                // suffixIcon: IconButton(
+                //   onPressed: () {},
+                //   icon: const Icon(Icons.remove_red_eye),
+                // ),
+                obscureText: false,
               ),
               const SizedBox(
-                height: 45,
+                height: 45
               ),
               ///------------the reset password button---------->
               Center(
                 child: MainButton(
                   onTap: () {
-                    AppFunctions.navigatePop(context);
+                    authCubit.updatePassword();
+                    // AppFunctions.navigatePop(context);
                   },
                   title: AppString.updatePassword,
                 ),
@@ -89,5 +111,7 @@ class ResetPassword extends StatelessWidget {
         ),
       ),
     );
+  },
+);
   }
 }

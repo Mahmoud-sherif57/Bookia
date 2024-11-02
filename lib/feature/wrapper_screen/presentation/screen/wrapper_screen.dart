@@ -1,6 +1,6 @@
 import 'package:bookia_118/core/theming/app_colors.dart';
 import 'package:bookia_118/feature/cart/presentation/screens/cart_screen.dart';
-import 'package:bookia_118/feature/home/presentation/screens/home.dart';
+import 'package:bookia_118/feature/home/presentation/screens/home_screen.dart';
 import 'package:bookia_118/feature/profile/presentation/screens/profile_screen.dart';
 import 'package:bookia_118/feature/wish_list/presentation/screens/wish_list_screen.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';

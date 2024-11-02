@@ -2,19 +2,20 @@ import 'package:bookia_118/core/constants/app_strings.dart';
 import 'package:bookia_118/core/cubits/category_cubit/category_state.dart';
 import 'package:bookia_118/core/theming/styles.dart';
 import 'package:bookia_118/core/widgets/app_shimmer.dart';
+import 'package:bookia_118/data/categories_model.dart';
 import 'package:bookia_118/data/local/app_data.dart';
-import 'package:bookia_118/feature/home/presentation/screens/notification.dart';
-import 'package:bookia_118/feature/home/presentation/screens/the_category_details_widget.dart';
+import 'package:bookia_118/feature/home/presentation/screens/notification_screen.dart';
+import 'package:bookia_118/core/widgets/the_book_card_widget.dart';
 import 'package:bookia_118/feature/login/presentation/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
 import '../../../../core/constants/constants.dart';
 import '../../../../core/cubits/category_cubit/category_cubit.dart';
 import '../../../../core/functions/navigation.dart';
 import '../../../../core/theming/app_colors.dart';
 import '../../../../data/book_model.dart';
+import 'books_by_category_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -25,7 +26,14 @@ class HomeScreen extends StatelessWidget {
     final categoryCubit = context.read<CategoryCubit>();
     var size = MediaQuery.of(context).size;
     return BlocConsumer<CategoryCubit, CategoryState>(
-      listener: (context, state) {},
+      listener: (context, state) {
+        if(state is GetBooksByCategoryIdSuccess){
+          AppFunctions.navigateTo(context, const BooksByCategoryScreen());
+        }
+        if(state is ToggleFavouriteState ){
+          debugPrint('toggled******');
+        }
+      },
       builder: (context, state) {
         return RefreshIndicator(
           onRefresh: categoryCubit.onRefresh,
@@ -59,9 +67,7 @@ class HomeScreen extends StatelessWidget {
                                   },
                                   child: SvgPicture.asset(AppIcons.notification),
                                 ),
-                                const SizedBox(
-                                  width: 16,
-                                ),
+                                const SizedBox(width: 16),
                                 InkWell(
                                   onTap: () {
                                     AppFunctions.navigateTo(context, const LoginScreen());
@@ -155,10 +161,10 @@ class HomeScreen extends StatelessWidget {
 
                         ///---------- the category section-------->
                         Container(
-                          // margin: const EdgeInsets.only(top: 10),
                           decoration: BoxDecoration(
-                              color: AppColors.primary.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(8)),
+                            color: AppColors.primary.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
                           width: 350,
                           height: 100, //0.34
                           child: ListView.builder(
@@ -167,6 +173,7 @@ class HomeScreen extends StatelessWidget {
                             physics: const BouncingScrollPhysics(),
                             itemCount: categoryList.length,
                             itemBuilder: (context, index) {
+                              CategoriesModel current = categoryList[index];
                               if (state is GetAllBooksLoading) {
                                 return const AppShimmer();
                               } else {
@@ -176,15 +183,19 @@ class HomeScreen extends StatelessWidget {
                                     children: [
                                       Expanded(
                                         child: InkWell(
-                                          onTap: () {},
+                                          onTap: ( ) {
+                                            categoryCubit.getBookByCategory(current.categoryId);
+                                              // AppFunctions.navigateTo(context, const BooksByCategoryScreen());
+
+                                          },
                                           child: Container(
                                             width: 70,
                                             height: 70,
                                             decoration: BoxDecoration(
                                               shape: BoxShape.circle,
                                               image: DecorationImage(
-                                                image: categoryList[index].image != null
-                                                    ? NetworkImage(categoryList[index].image!)
+                                                image: current.image != null
+                                                    ? NetworkImage(current.image!)
                                                     : const AssetImage('assets/images/aflaton.png')
                                                         as ImageProvider,
                                                 fit: BoxFit.cover,
@@ -193,7 +204,7 @@ class HomeScreen extends StatelessWidget {
                                           ),
                                         ),
                                       ),
-                                      Text(categoryList[index].name!),
+                                      Text(current.name!),
                                     ],
                                   ),
                                 );
@@ -224,7 +235,7 @@ class HomeScreen extends StatelessWidget {
                               return const AppShimmer();
                             } else {
                               BookModel current = booksListData[index];
-                              return TheCategoryDetailsWidget(
+                              return TheBookCardWidget(
                                 current: current,
                                 index: index,
                               );

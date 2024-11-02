@@ -1,4 +1,4 @@
-import 'package:bookia_118/feature/home/presentation/screens/the_category_details_widget.dart';
+import 'package:bookia_118/core/widgets/the_book_card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/cubits/category_cubit/category_cubit.dart';
@@ -31,7 +31,7 @@ class SearchScreen extends StatelessWidget {
                       height: 45,
                       child: TextFormField(
                         controller: categoryCubit.searchController,
-                        onChanged: (value) => categoryCubit.categoryInSearch(value),
+                        onChanged: (value) => categoryCubit.booksInSearch(value),
                         decoration: InputDecoration(
                           // contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                           fillColor: AppColors.offWhite,
@@ -73,7 +73,7 @@ class SearchScreen extends StatelessWidget {
                         return const AppShimmer();
                       } else {
                         BookModel current = categoryCubit.itemsInSearch[index];
-                        return TheCategoryDetailsWidget(
+                        return TheBookCardWidget(
                           current: current,
                           index: index,
                         );
