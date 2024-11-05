@@ -26,9 +26,6 @@ class AppBackButton extends StatelessWidget {
             width: 26,
             height: 26,
           ),
-          // Icon(
-          //   Icons.arrow_back_ios_new,
-          // ),
         ),
       ),
     );

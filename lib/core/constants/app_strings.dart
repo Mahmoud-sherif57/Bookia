@@ -20,6 +20,8 @@ class AppString {
   static const String enterYourEmail = "Enter your email";
   static const String enterYourPassword = "Enter your password";
   static const String userName = "User Name";
+  static const String orderId = "Id:";
+  static const String name = "Name:";
   static const String email = "Email";
   static const String password = "Password";
   static const String confirmPassword = "Confirm Password";
@@ -52,8 +54,12 @@ class AppString {
   static const String checkOut = "Check Out";
   static const String submitOrder = "Submit Order";
   static const String fullName = "Full name";
-  static const String address = "address";
+  static const String address = "Address";
   static const String phoneNumber = "Phone Number";
+  static const String latitude = "Latitude";
+  static const String longitude = "Longitude";
+  static const String paymentType = "payment type";
+  static const String transactionId = "transaction Id";
   static const String success = "SUCCESS!";
   static const String backToHome = " Back To Home";
   static const String profile = " profile";
@@ -67,8 +73,17 @@ class AppString {
   static const String totalAmount = "Total amount :";
   static const String detail = "Detail";
   static const String delivered = "Delivered";
+  static const String cancelled = "cancelled";
   static const String notification = "Notification";
   static const String shipping = "shipping :";
+  static const String discount = "discount :";
   static const String tax = "tax :";
   static const String subTotal = "Sub Total :";
+  static const String userId = 'id';
+  static const String userName2 = 'Name';
+  static const String image = 'image';
+  static const String userEmail = 'Email';
+  static const String lat = 'lat';
+  static const String lng = 'lng';
+  static const String loading = 'Loading Your Data ...';
 }

@@ -40,7 +40,7 @@ void main() async{
       ..textColor = Colors.yellow
       ..maskColor = Colors.blue.withOpacity(0.5)
       ..userInteractions = false
-      ..dismissOnTap = false ;
+      ..dismissOnTap = true ;
 
 
     // ..customAnimation = CustomAnimation();

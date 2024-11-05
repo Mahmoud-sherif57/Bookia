@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 
 class EndPoints {
   static const baseUrl = 'http://bookia.leaderfortrans.com/api/';
@@ -20,6 +19,7 @@ class EndPoints {
   static const viewCart = 'cart';
   static const addToCart = 'add_to_cart';
   static const removeFromCart = 'remove_from_cart';
+  static const deleteFromCart = 'delete_from_cart';
   static const checkCoupon = 'check_coupon';
   static const calckShipping = 'calck_shipping';
   static const viewAllOrders = 'orders';

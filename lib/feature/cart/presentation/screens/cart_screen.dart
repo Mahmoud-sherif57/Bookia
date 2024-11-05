@@ -18,12 +18,16 @@ class CartScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    CategoryCubit.get(context).viewCart();
     var size = MediaQuery.of(context).size;
-    final categoryCubit = context.read<CategoryCubit>();
+
+    /// call the viewCart function when i navigate to the cart screen =====>
     return SafeArea(
       child: BlocConsumer<CategoryCubit, CategoryState>(
         listener: (context, state) {},
         builder: (context, state) {
+          final categoryCubit = context.read<CategoryCubit>();
+          final cartData = categoryCubit.cartData;
           return Scaffold(
             backgroundColor: AppColors.backGround,
             body: Padding(
@@ -35,17 +39,19 @@ class CartScreen extends StatelessWidget {
                     children: [
                       const ReusablePageName(text: AppString.myCart),
                       const SizedBox(
-                        height: 10,
+                        height: 10
                       ),
+
+                      ///--------the books in cart------->
                       Expanded(
                         flex: 6,
-                        child: categoryCubit.itemsInCart.isNotEmpty
+                        child: cartData?.items?.isNotEmpty ?? false
                             ? ListView.builder(
                                 shrinkWrap: true,
                                 physics: const BouncingScrollPhysics(),
-                                itemCount: categoryCubit.itemsInCart.length,
+                                itemCount: cartData?.items!.length,
                                 itemBuilder: (context, index) {
-                                  var current = categoryCubit.itemsInCart[index];
+                                  var current = cartData?.items![index];
                                   return Container(
                                     decoration: BoxDecoration(
                                       color: AppColors.beige,
@@ -54,15 +60,21 @@ class CartScreen extends StatelessWidget {
                                     margin: const EdgeInsets.all(5),
                                     child: Stack(children: [
                                       /// the book image
-                                      Container(
-                                        width: 100,
-                                        height: 120,
-                                        margin: const EdgeInsets.all(5),
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(15),
-                                          image: DecorationImage(
-                                            fit: BoxFit.cover,
-                                            image: AssetImage(current.imageUrl),
+                                      InkWell(
+                                        onTap: () {},
+                                        child: Container(
+                                          width: 100,
+                                          height: 120,
+                                          margin: const EdgeInsets.all(5),
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(15),
+                                            image: DecorationImage(
+                                              image: current?.image != null
+                                                  ? NetworkImage(current!.image!)
+                                                  : const AssetImage('assets/images/splash_image.png')
+                                                      as ImageProvider,
+                                              fit: BoxFit.cover,
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -71,7 +83,7 @@ class CartScreen extends StatelessWidget {
                                       Positioned(
                                         top: 10,
                                         left: 120,
-                                        child: Text(current.bookName),
+                                        child: Text(current?.name ?? ""),
                                       ),
 
                                       /// the book price
@@ -79,7 +91,7 @@ class CartScreen extends StatelessWidget {
                                         top: 40,
                                         left: 120,
                                         child: Text(
-                                          "${current.price.toString()} \$",
+                                          "${current?.price ?? ""} \$  ",
                                           style: font18RegularDark.copyWith(fontSize: 16),
                                         ),
                                       ),
@@ -94,7 +106,7 @@ class CartScreen extends StatelessWidget {
                                             fit: BoxFit.cover,
                                           ),
                                           onTap: () {
-                                            categoryCubit.deleteFromCart(current);
+                                            categoryCubit.removeFromCart(current?.bookId);
                                           },
                                         ),
                                       ),
@@ -103,17 +115,16 @@ class CartScreen extends StatelessWidget {
                                         bottom: 10,
                                         right: 95,
                                         child: SizedBox(
-                                          // color: AppColors.red,
-                                          // margin: EdgeInsets.only(top: size.height * 0.04),
                                           width: 120,
                                           height: 45,
                                           child: Row(
                                             children: [
                                               /// the sum(+)
                                               InkWell(
-                                                onTap: () {},
+                                                onTap: () {
+                                                  categoryCubit.addToCart(current?.bookId);
+                                                },
                                                 child: Container(
-                                                  // margin: const EdgeInsets.all(4.0),
                                                   width: 30,
                                                   height: 30,
                                                   decoration: BoxDecoration(
@@ -132,16 +143,17 @@ class CartScreen extends StatelessWidget {
                                               Padding(
                                                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
                                                 child: Text(
-                                                  current.value.toString(),
+                                                  current!.qty.toString(),
                                                   style: font18RegularDark,
                                                 ),
                                               ),
 
                                               /// the minus (-)
                                               InkWell(
-                                                onTap: () {},
+                                                onTap: () {
+                                                  categoryCubit.decreaseQuantity(current.bookId);
+                                                },
                                                 child: Container(
-                                                  // margin: const EdgeInsets.all(4.0),
                                                   width: 30,
                                                   height: 30,
                                                   decoration: BoxDecoration(
@@ -180,41 +192,63 @@ class CartScreen extends StatelessWidget {
                                 ],
                               ),
                       ),
+
+                      ///--------the pricing------>
                       Expanded(
                         flex: 2,
-                        child: Column(
-                          children: [
-                            ReusableRowForCart(
-                              price: categoryCubit.getTotalCost(),
-                              text: AppString.total,
-                            ),
-                            ReusableRowForCart(
-                              price: categoryCubit.getTotalCost() * 0.18,
-                              text: AppString.tax,
-                            ),
-                            ReusableRowForCart(
-                              price: categoryCubit.getTotalCost() * 0.05,
-                              text: AppString.shipping,
-                            ),
-                            const Divider(
-                              color: AppColors.border,
-                              indent: 10,
-                              endIndent: 10
-                            ),
-                            ReusableRowForCart(
-                              price: categoryCubit.getTotalCost(),
-                              text: AppString.subTotal,
-                            ),
-                            Center(
-                              child: MainButton(
-                                height: 50,
-                                title: AppString.checkOut,
-                                onTap: () {
-                                  AppFunctions.navigateTo(context, const CheckoutScreen());
-                                },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: AppColors.beige,
+                          ),
+                          child: Column(
+                            children: [
+                              ///----the sub total--------->
+                              ReusableRowForCart(
+                                price: cartData?.subTotal ?? "",
+                                text: AppString.subTotal,
                               ),
-                            )
-                          ],
+
+                              ///----the tax--------->
+                              ReusableRowForCart(
+                                price: cartData?.tax ?? "",
+                                text: AppString.tax,
+                              ),
+
+                              ///----the discount--------->
+                              ReusableRowForCart(
+                                price: cartData?.discount ?? "",
+                                text: AppString.discount,
+                              ),
+
+                              ///----the shipping--------->
+                              ReusableRowForCart(
+                                price: cartData?.shipping ?? "",
+                                text: AppString.shipping,
+                              ),
+                              const Divider(color: AppColors.gray, indent: 10, endIndent: 10),
+
+                              ///----the subTotal--------->
+                              ReusableRowForCart(
+                                price: cartData?.total ?? "",
+                                text: AppString.total,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      ///-----the check out button------->
+                      Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Center(
+                          child: MainButton(
+                            height: 50,
+                            title: AppString.checkOut,
+                            onTap: () {
+                              AppFunctions.navigateTo(context, const CheckoutScreen());
+                            },
+                          ),
                         ),
                       )
                     ],

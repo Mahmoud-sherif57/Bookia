@@ -49,6 +49,7 @@ dependencies:
   custom_refresh_indicator: ^4.0.1
   shimmer: ^3.0.0
   logger: ^2.4.0
+  pretty_dio_logger: ^1.4.0
 
 dev_dependencies:
   flutter_test:

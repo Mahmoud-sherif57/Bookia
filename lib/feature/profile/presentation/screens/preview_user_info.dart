@@ -1,13 +1,13 @@
-import 'package:bookia_118/core/widgets/app_back_button.dart';
+import 'package:bookia_118/core/functions/navigation.dart';
+import 'package:bookia_118/feature/wrapper_screen/presentation/screen/wrapper_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/cubits/auth_cubit/auth_cubit.dart';
 import '../../../../core/cubits/auth_cubit/auth_state.dart';
 import '../../../../core/theming/app_colors.dart';
-import '../../../../core/theming/styles.dart';
 import '../../../../core/widgets/reusable_page_name.dart';
-import '../../../../core/widgets/setting_profile_field_widget.dart';
 import '../../../../core/widgets/user_info_field_widget.dart';
 
 class PreviewUserInfo extends StatelessWidget {
@@ -16,20 +16,10 @@ class PreviewUserInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-
+    final authCubit = AuthCubit.get(context);
     return SafeArea(
       child: BlocConsumer<AuthCubit, AuthState>(
-        listener: (context, state) {
-          // if (state is AuthSuccessState) {
-          //   // EasyLoading.showSuccess('Success login! ');
-          //   EasyLoading.showSuccess(" ${state.msg}");
-          //   AppFunctions.navigateAndRemove(context, const LoginScreen());
-          // } else if (state is AuthFailedState) {
-          //   EasyLoading.showError(state.error);
-          // } else if (state is AuthLoadingState) {
-          //   EasyLoading.show(status: "loading..");
-          // }
-        },
+        listener: (context, state) {},
         builder: (context, state) {
           return Scaffold(
             resizeToAvoidBottomInset: false,
@@ -38,26 +28,48 @@ class PreviewUserInfo extends StatelessWidget {
               padding: const EdgeInsets.all(12.0),
               child: SizedBox(
                 height: size.height,
-                child: const SingleChildScrollView(
+                child: SingleChildScrollView(
                   child: Column(
                     children: [
                       Row(
                         children: [
-                          AppBackButton(),
-                          Spacer(),
-                          Center(
+                          // AppBackButton(),
+                          ///-------- instead of AppBackButton------->
+                          InkWell(
+                            onTap: () {
+                              AppFunctions.navigateTo(context, const WrapperHomeScreen());
+                            },
+                            child: Container(
+                              width: 41,
+                              height: 41,
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(color: AppColors.border),
+                              ),
+                              child: Center(
+                                child: SvgPicture.asset(
+                                  "assets/images/arrow_back.svg",
+                                  width: 26,
+                                  height: 26,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const Spacer(),
+                          const Center(
                             child: ReusablePageName(
                               width: 170,
                               text: AppString.profile,
                             ),
                           ),
-                          Spacer(),
+                          const Spacer(),
                         ],
                       ),
-                      SizedBox(height: 25),
+                      const SizedBox(height: 25),
 
                       ///-------user information------>
-                      CircleAvatar(
+                      const CircleAvatar(
                         backgroundColor: AppColors.primary,
                         radius: 55,
                         child: Icon(
@@ -66,32 +78,32 @@ class PreviewUserInfo extends StatelessWidget {
                           color: AppColors.ivory,
                         ),
                       ),
-                      SizedBox(height: 35),
+                      const SizedBox(height: 35),
 
                       ///--------settings fields------->
                       Column(
                         children: [
                           UserInfoFieldWidget(
-                            text: 'name : **********',
+                            text: '  ${AppString.userName2} :${authCubit.userInfoMap[AppString.userName2]}',
                           ),
-                          SizedBox(height: 25),
+                          const SizedBox(height: 25),
                           UserInfoFieldWidget(
-                            text: 'email : **********',
+                            text: '${AppString.userEmail} : ${authCubit.userInfoMap[AppString.userEmail]} ',
                           ),
-                          SizedBox(height: 25),
+                          const SizedBox(height: 25),
                           UserInfoFieldWidget(
-                            text: 'address : **********',
+                            text: '${AppString.address} : ${authCubit.userInfoMap[AppString.address]}  ',
                           ),
-                          SizedBox(height: 25),
+                          const SizedBox(height: 25),
                           Row(
                             children: [
                               UserInfoFieldWidget(
-                                text: 'lat : **********',
+                                text: '${AppString.lat} :${authCubit.userInfoMap[AppString.lat]} ',
                                 width: 160,
                               ),
-                              Spacer(),
+                              const Spacer(),
                               UserInfoFieldWidget(
-                                text: 'lng : **********',
+                                text: '${AppString.lng} : ${authCubit.userInfoMap[AppString.lng]}',
                                 width: 160,
                               ),
                             ],

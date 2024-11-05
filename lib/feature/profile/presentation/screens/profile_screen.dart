@@ -10,6 +10,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/cubits/auth_cubit/auth_cubit.dart';
 import '../../../../core/cubits/auth_cubit/auth_state.dart';
+import '../../../../core/cubits/category_cubit/category_cubit.dart';
 import '../../../../core/theming/app_colors.dart';
 import '../../../../core/theming/styles.dart';
 import '../../../../core/widgets/reusable_page_name.dart';
@@ -22,18 +23,31 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-
+    final authCubit = AuthCubit.get(context);
+    authCubit.getUserProfile();
+    CategoryCubit.get(context).viewOrders();
     return SafeArea(
       child: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
           if (state is AuthSuccessState) {
-            // EasyLoading.showSuccess('Success login! ');
+            EasyLoading.showSuccess('Success');
             EasyLoading.showSuccess(" ${state.msg}");
             AppFunctions.navigateAndRemove(context, const LoginScreen());
           } else if (state is AuthFailedState) {
             EasyLoading.showError(state.error);
           } else if (state is AuthLoadingState) {
             EasyLoading.show(status: "loading..");
+          }
+          if (state is GetUserProfileSuccess) {
+            // EasyLoading.showSuccess('Success');
+            EasyLoading.dismiss();
+            // AppFunctions.navigateAndRemove(context, const PreviewUserInfo());
+          } else if (state is GetUserProfileFailed) {
+            EasyLoading.showError("");
+            EasyLoading.dismiss();
+          } else if (state is GetUserProfileLoading) {
+            EasyLoading.show(status: "loading..");
+
           }
         },
         builder: (context, state) {
@@ -76,11 +90,14 @@ class ProfileScreen extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Eng. Mahmoud sherif',
+                                authCubit.userInfoMap[AppString.userName2 ] ?? "",
+                                // 'Eng. Mahmoud sherif',
                                 style: font20BoldDark,
                               ),
                               Text(
-                                "mahmoudsherif388@gmail.com",
+                                authCubit.userInfoMap[AppString.email] ?? "" ,
+                                // authCubit.userInfoMap[AppString.email] ?? "" ,
+                                // "mahmoudsherif388@gmail.com",
                                 style: font14RegularDarkGray,
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -95,6 +112,7 @@ class ProfileScreen extends StatelessWidget {
                         children: [
                           SettingProfileFieldsField(
                             onPressed: () {
+
                               AppFunctions.navigateTo(context, const MyOrders());
                             },
                             text: AppString.myOrder,

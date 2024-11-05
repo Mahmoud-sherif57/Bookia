@@ -1,5 +1,4 @@
 import 'package:bookia_118/core/constants/app_strings.dart';
-import 'package:bookia_118/core/functions/navigation.dart';
 import 'package:bookia_118/core/theming/app_colors.dart';
 import 'package:bookia_118/core/widgets/app_back_button.dart';
 import 'package:bookia_118/core/widgets/main_button.dart';

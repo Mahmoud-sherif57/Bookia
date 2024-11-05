@@ -24,6 +24,7 @@ class _SplashScreenState extends State<SplashScreen> {
     Future.delayed(const Duration(seconds: 3), () async {
       const storage = FlutterSecureStorage();
       String? value = await storage.read(key: SharedKeys.token);
+      if(!mounted) return ;   // this line to avoid the message( info: Don't use 'BuildContext's across async gaps. )
       if (value != null) {
         AppFunctions.navigateAndRemove(context, const WrapperHomeScreen());
       } else {

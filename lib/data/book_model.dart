@@ -6,7 +6,7 @@ class BookModel {
   String? categoryName;
   String? price;
   String? offer;
-  bool? isInTheWishList;
+  bool? isInTheWishList ;
   // bool? isOnTheCart;
 
   BookModel({
@@ -30,6 +30,6 @@ class BookModel {
     imageUrl = json["image"];
     price = json["price"];
     offer = json["offer"];
-    isInTheWishList = json["is_in_my_wishlist"] ?? [];
+    isInTheWishList = json["is_in_my_wishlist"];
   }
 }

@@ -23,9 +23,7 @@ class TheBookCardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final categoryCubit = context.read<CategoryCubit>();
     return BlocConsumer<CategoryCubit, CategoryState>(
-      listener: (context, state) {
-        // TODO: implement listener
-      },
+      listener: (context, state) {},
       builder: (context, state) {
         return Padding(
           padding: const EdgeInsets.all(5.0),
@@ -41,7 +39,6 @@ class TheBookCardWidget extends StatelessWidget {
                 Column(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-
                     ///---------the image---------->
                     InkWell(
                       onTap: () {
@@ -55,11 +52,11 @@ class TheBookCardWidget extends StatelessWidget {
                         decoration: BoxDecoration(
                           image: DecorationImage(
                             image: current.imageUrl != null
-                            // image: booksListData[index].imageUrl != null
+                                // image: booksListData[index].imageUrl != null
                                 ? NetworkImage(
-                              current.imageUrl!,
-                              // booksListData[index].imageUrl!,
-                            )
+                                    current.imageUrl!,
+                                    // booksListData[index].imageUrl!,
+                                  )
                                 : const AssetImage('assets/images/aflaton.png') as ImageProvider,
                             fit: BoxFit.cover,
                           ),
@@ -82,7 +79,6 @@ class TheBookCardWidget extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-
                         ///---------add price of the item---------->
                         Text(
                           "${current.price} \$",
@@ -92,7 +88,7 @@ class TheBookCardWidget extends StatelessWidget {
                         ///---------the buy button------->
                         InkWell(
                           onTap: () {
-                            categoryCubit.toggleCart(current, context);
+                            categoryCubit.addToCart(current.bookId);
                           },
                           child: Container(
                             width: 72,

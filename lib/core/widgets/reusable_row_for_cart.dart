@@ -2,9 +2,10 @@ import 'package:bookia_118/core/theming/styles.dart';
 import 'package:flutter/material.dart';
 
 class ReusableRowForCart extends StatelessWidget {
-  const ReusableRowForCart({super.key, required this.price, required this.text});
-  final num price;
+  const ReusableRowForCart({super.key, required this.price, required this.text, this.style});
+  final String? price;
   final String text;
+  final TextStyle? style;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -15,12 +16,13 @@ class ReusableRowForCart extends StatelessWidget {
           Text(
             text,
             // style: font20BoldDark,
-            style: font16MediumDark,
+            style: style ?? font16MediumDark,
           ),
           const Spacer(),
           Text(
-            "${price.toStringAsFixed(2).toString()} \$",
-            style: font16MediumDark,
+            // "$price \$",
+            price != null ? "${double.parse(price!).toStringAsFixed(2)} \$" : "-",
+            style: style ?? font16MediumDark,
             // style: font20BoldDark,
           ),
         ],

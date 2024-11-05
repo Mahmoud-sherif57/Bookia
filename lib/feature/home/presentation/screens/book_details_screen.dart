@@ -109,8 +109,7 @@ class _BookDetailsState extends State<BookDetails> {
                     ///-----the add to cart button----->
                     MainButton(
                       onTap: () {
-                        /// TODO: add cubit (add to cart)
-                        // categoryCubit.toggleCart(current, context);
+                        CategoryCubit.get(context).addToCart(current.bookId);
                       },
                       width: 180,
                       color: AppColors.black,

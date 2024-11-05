@@ -9,6 +9,7 @@ import 'package:bookia_118/core/widgets/the_book_card_widget.dart';
 import 'package:bookia_118/feature/login/presentation/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../core/constants/constants.dart';
 import '../../../../core/cubits/category_cubit/category_cubit.dart';
@@ -27,12 +28,20 @@ class HomeScreen extends StatelessWidget {
     var size = MediaQuery.of(context).size;
     return BlocConsumer<CategoryCubit, CategoryState>(
       listener: (context, state) {
-        if(state is GetBooksByCategoryIdSuccess){
+        if (state is GetBooksByCategoryIdSuccess) {
           AppFunctions.navigateTo(context, const BooksByCategoryScreen());
+        } else if (state is ToggleFavouriteState) {
+          EasyLoading.showSuccess(state.msg);
         }
-        if(state is ToggleFavouriteState ){
-          debugPrint('toggled******');
-        }
+        // if (state is AddedToCartSuccessfulState) {
+        //   EasyLoading.showSuccess(state.msg);
+        //   EasyLoading.dismiss();
+        // } else if (state is AddedToCartFailedState) {
+        //   EasyLoading.showError("Failed to add to cart");
+        //   EasyLoading.dismiss();
+        // } else if (state is AddedToCartLoadingState) {
+        //   EasyLoading.show(status: "loading..");
+        // }
       },
       builder: (context, state) {
         return RefreshIndicator(
@@ -57,7 +66,11 @@ class HomeScreen extends StatelessWidget {
                           children: [
                             SizedBox(
                               height: 30,
-                              child: Image.asset(AppImages.splashLogo, fit: BoxFit.cover),
+                              child: InkWell(
+                                  onTap: () {
+                                    categoryCubit.getAllBooks();
+                                  },
+                                  child: Image.asset(AppImages.splashLogo, fit: BoxFit.cover)),
                             ),
                             Row(
                               children: [
@@ -183,10 +196,9 @@ class HomeScreen extends StatelessWidget {
                                     children: [
                                       Expanded(
                                         child: InkWell(
-                                          onTap: ( ) {
+                                          onTap: () {
                                             categoryCubit.getBookByCategory(current.categoryId);
-                                              // AppFunctions.navigateTo(context, const BooksByCategoryScreen());
-
+                                            // AppFunctions.navigateTo(context, const BooksByCategoryScreen());
                                           },
                                           child: Container(
                                             width: 70,

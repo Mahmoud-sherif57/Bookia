@@ -24,7 +24,6 @@ class WishlistScreen extends StatelessWidget {
           if (state is GetFavouriteSuccessState) {
             // EasyLoading.showSuccess('');
             EasyLoading.dismiss();
-
           } else if (state is GetFavouriteFailedState) {
             // EasyLoading.showError('Failed to LogIn');
             EasyLoading.showError(state.error);
@@ -69,7 +68,7 @@ class WishlistScreen extends StatelessWidget {
                                           image: DecorationImage(
                                             image: current.imageUrl != null
                                                 ? NetworkImage(current.imageUrl!)
-                                                : const AssetImage('assets/images/aflaton.png')
+                                                : const AssetImage('assets/images/splash_image.png')
                                                     as ImageProvider,
                                             fit: BoxFit.cover,
                                           ),
@@ -104,6 +103,8 @@ class WishlistScreen extends StatelessWidget {
                                             fit: BoxFit.cover,
                                           ),
                                           onTap: () {
+                                            // we used toggleFavorite function to delete the item from wish list screen
+                                            categoryCubit.toggleFavorite(current.bookId);
                                           },
                                         ),
                                       ),
@@ -114,7 +115,7 @@ class WishlistScreen extends StatelessWidget {
                                         right: 25,
                                         child: InkWell(
                                           onTap: () {
-                                            categoryCubit.toggleCart(current, context);
+                                            categoryCubit.addToCart( current.bookId);
                                           },
                                           child: Container(
                                             width: 180,
@@ -125,8 +126,8 @@ class WishlistScreen extends StatelessWidget {
                                               borderRadius: BorderRadius.circular(8),
                                             ),
                                             child: Text(
-                                              "add To Cart",
-                                              // current.isOnTheCart? AppString.inTheCart : AppString.addToCart,
+                                              // "add To Cart",
+                                              current.isInTheWishList? AppString.inTheCart : AppString.addToCart,
                                               style: font15RegularWhite,
                                             ),
                                           ),

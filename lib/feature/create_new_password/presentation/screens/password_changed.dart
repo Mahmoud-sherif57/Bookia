@@ -18,7 +18,7 @@ class PasswordChanged extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authCubit = AuthCubit.get(context);
+    AuthCubit.get(context);
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state is AuthSuccessState) {

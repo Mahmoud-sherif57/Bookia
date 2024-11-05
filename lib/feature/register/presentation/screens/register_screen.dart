@@ -151,7 +151,7 @@ class RegisterScreen extends StatelessWidget {
                       text1: AppString.alreadyHaveAnAccount,
                       text2: AppString.loginNow,
                       onPressed: () {
-                        AppFunctions.navigateTo(context, LoginScreen());
+                        AppFunctions.navigateTo(context, const LoginScreen());
                       },
                     )
                   ],

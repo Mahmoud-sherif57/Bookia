@@ -1,4 +1,6 @@
 import 'package:bookia_118/data/book_model.dart';
+import 'package:bookia_118/data/cart_model.dart';
+import 'package:bookia_118/data/order_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,16 +20,23 @@ class CategoryCubit extends Cubit<CategoryState> {
   List itemsInCart = [];
   List<BookModel> itemsInSearch = [];
   List<BookModel> booksByCategory = [];
+  List<OrdersModel> ordersList = [];
+  CartModel? cartData;
 
   ///=>> if i used it >> after finishing search the home page show the items on search  >> fix it ⤵⤵
   // List<BookModel> itemsInSearch = booksListData;
   TextEditingController searchController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
+  TextEditingController latitudeController = TextEditingController();
+  TextEditingController longitudeController = TextEditingController();
+  TextEditingController paymentTypeController = TextEditingController();
+  TextEditingController transactionIdController = TextEditingController();
 
   ///-------OnRefresh function-------->
   Future<void> onRefresh() async {
-    // booksListData.clear();
-    // bannerList.clear();
-    // categoryList.clear();
     await getAllBooks();
     while (state is GetAllBooksLoading) {
       await Future.delayed(const Duration(milliseconds: 100));
@@ -67,8 +76,8 @@ class CategoryCubit extends Cubit<CategoryState> {
       }
       emit(GetAllBooksSuccess());
       // debugPrint(value.data["data"].toString());
-      debugPrint("length of booksListData ${booksListData.length.toString()}");
-      debugPrint("length of itemsInSearch ${itemsInSearch.length.toString()}");
+      // debugPrint("length of booksListData ${booksListData.length.toString()}");
+      // debugPrint("length of itemsInSearch ${itemsInSearch.length.toString()}");
     }).catchError((error) {
       if (error is DioException) {
         // debugPrint(error.message.toString());
@@ -97,8 +106,8 @@ class CategoryCubit extends Cubit<CategoryState> {
         itemsInSearch.add(bookInSearch);
       }
 
-      debugPrint("length of booksListData ${booksListData.length.toString()}");
-      debugPrint("length of itemsInSearch ${itemsInSearch.length.toString()}");
+      // debugPrint("length of booksListData ${booksListData.length.toString()}");
+      // debugPrint("length of itemsInSearch ${itemsInSearch.length.toString()}");
 
       emit(GetAllBooksSuccess());
     }).catchError((error) {
@@ -117,9 +126,9 @@ class CategoryCubit extends Cubit<CategoryState> {
   void canselTheSearch() {
     searchController.clear();
     itemsInSearch = [];
-    emit(ItemRemovedSuccessfully());
-    debugPrint("length of booksListData ${booksListData.length.toString()}");
-    debugPrint("length of itemsInSearch ${itemsInSearch.length.toString()}");
+    emit(CanselSearchState());
+    // debugPrint("length of booksListData ${booksListData.length.toString()}");
+    // debugPrint("length of itemsInSearch ${itemsInSearch.length.toString()}");
   }
 
   ///------the getBookByCategory function---------->
@@ -135,7 +144,7 @@ class CategoryCubit extends Cubit<CategoryState> {
         BookModel book = BookModel.fromJson(element);
         booksByCategory.add(book);
       }
-      debugPrint(value.data.toString());
+      // debugPrint(value.data.toString());
       emit(GetBooksByCategoryIdSuccess());
     }).catchError((error) {
       if (error is DioException) {
@@ -161,23 +170,25 @@ class CategoryCubit extends Cubit<CategoryState> {
       endPoint: "toggle_wishlist/$bookId",
       withToken: true,
     ).then((value) {
-      debugPrint(value.data.toString());
-      // emit(ToggleFavouriteSuccess());
-      emit(ToggleFavouriteState());
+      // debugPrint(value.data.toString());
+      emit(ToggleFavouriteState(value.data["message"]));
     }).catchError((error) {
+      emit(ToggleFavouriteState(""));
       if (error is DioException) {
-        debugPrint(error.response.toString());
+        // debugPrint(error.response.toString());
         // emit(ToggleFavouriteFailed());
         return;
       }
+      emit(ToggleFavouriteState(""));
       // emit(ToggleFavouriteFailed());
-      debugPrint(error.response.toString());
+      // debugPrint(error.response.toString());
       throw error;
     });
   }
 
   ///---------getBooksInWishList---------->
   Future<void> getBooksInWishList() async {
+    // DioHelper.setupDio();
     emit(GetFavouriteLoadingState());
     await DioHelper.get(
       endPoint: EndPoints.wishLists,
@@ -188,17 +199,18 @@ class CategoryCubit extends Cubit<CategoryState> {
         BookModel book = BookModel.fromJson(element);
         itemsInWishList.add(book);
       }
+      debugPrint(value.data.toString());
 
       emit(GetFavouriteSuccessState());
-      debugPrint(value.data.toString());
+      // debugPrint(value.data.toString());
     }).catchError((error) {
       if (error is DioException) {
         emit(GetFavouriteFailedState(error.response.toString()));
-        debugPrint(error.response.toString());
+        // debugPrint(error.response.toString());
         return;
       }
       emit(GetFavouriteFailedState(error.response.toString()));
-      debugPrint(error.response.toString());
+      // debugPrint(error.response.toString());
     });
   }
 
@@ -221,124 +233,145 @@ class CategoryCubit extends Cubit<CategoryState> {
   //   });
   // }
 
+  ///--------addToCart function ----------->
 
-
-
-
-
-  ///
-  ///
-  ///
-  ///
-  ///
-  ///
-  ///
-  ///
-  ///
-  ///------------------addToFavouriteFunction---------->
-  void addToFavourite(BookModel data, BuildContext context) {
-    itemsInWishList.add(data);
-    emit(AddedToTheCartState());
-  }
-
-  ///------------------delete item from Favourite---------->
-  void deleteFromFavourite(BookModel data) {
-    itemsInWishList.removeWhere((element) => element.bookId == data.bookId);
-    data.isInTheWishList;
-    // if i increased the value(quantity) and removed the item from the list the value still increased..
-    // to solve this problem when i tap on close. the value will be reset to 1..
-    emit(ToggleFavouriteSuccess());
-  }
-
-  ///----------toggle favourite--------->
-  toggleFavourite(BookModel data, BuildContext context) {
-    emit(ToggleFavouriteLoading());
-    data.isInTheWishList = !data.isInTheWishList!;
-    if (data.isInTheWishList!) {
-      addToFavourite(data, context);
-    } else {
-      deleteFromFavourite(data);
-    }
-  }
-
-  ///------------------addToCartFunction---------->
-  void addToCart(BookModel data, BuildContext context) {
-    itemsInCart.add(data);
-    emit(AddedToTheCartState());
-  }
-
-  ///------------------delete item from the cart---------->
-  void deleteFromCart(BookModel data) {
-    itemsInCart.removeWhere((element) => element.bookId == data.bookId);
-    // if i increased the value(quantity) and removed the item from the list the value still increased..
-    // to solve this problem when i tap on close. the value will be reset to 1..
-    // data.value = 1;
-    emit(RemovedFromTheCartState());
-  }
-
-  ///-------------toggle cart------------>
-  void toggleCart(BookModel data, BuildContext context) {
-    // data.isOnTheCart = !data.isOnTheCart!;
-    // if (data.isOnTheCart!) {
-    //   addToCart(data, context);
-    // } else {
-    //   deleteFromCart(data);
-    // }
-  }
-
-  ///------------------increase quantity of item------------>
-  /// replace with api
-  void increaseQuantity(BookModel current) {
-    // if (current.value! >= 0) {
-    //   current.value = (current.value)! + 1;
-    //   emit(IncreaseValueState());
-    // }
-  }
-
-  ///------------------decrease quantity of item------------>
-  /// replace with api
-  void decreaseQuantity(BookModel current, BuildContext context) {
-    // if (current.value! > 1) {
-    //   current.value = (current.value)! - 1;
-    //   emit(DecreaseValueState());
-    // }
-    // else {
-    //   toggleCart(current,context);
-    //   // current.value = 1;
-    //   emit(RemovedFromTheCartState());
-    // }
-  }
-
-  ///----------calculates the total cost of the items on the cart------->
-  /// replace with api
-  num getTotalCost() {
-    num total = 0;
-    if (itemsInCart.isEmpty) {
-      total = 0;
-      return total;
-    } else {
-      for (BookModel items in itemsInCart) {
-        total = total;
-        // ex: total = 0 + 10$ * 2 pieces ;
-        //     total = 20$ ;
+  Future<void> addToCart(num? bookId) async {
+    emit(AddedToCartLoadingState());
+    await DioHelper.post(endPoint: EndPoints.addToCart, withToken: true, body: {
+      "book_id": bookId.toString(),
+    }).then((value) {
+      debugPrint(value.data.toString());
+      // debugPrint(value.data["message"]);
+      emit(AddedToCartSuccessfulState());
+    }).catchError((error) {
+      if (error is DioException) {
+        // debugPrint(error.response?.data.toString());
+        // debugPrint("Dio Exception **");
+        emit(AddedToCartFailedState());
       }
-    }
-    return double.parse(total.toStringAsFixed(2));
-    // return null;
-    // Safety format to 2 decimals because sometimes the total be like (00.00000000000)
+      // debugPrint(error.toString());
+      // debugPrint(" NOT Dio Exception **");
+      emit(AddedToCartFailedState());
+    });
   }
 
-  ///----------calculates the total amount of the items on the cart------->
-  num getTotalAmount() {
-    num total = 0;
-    if (itemsInCart.isEmpty) {
-      total = 0;
-      return total;
-    } else {
-      for (BookModel items in itemsInCart) {
-        total = total;
+  ///--------view cart function------------>
+
+  Future<void> viewCart() async {
+    emit(ViewCartLoadingState());
+    await DioHelper.get(
+      endPoint: EndPoints.viewCart,
+      withToken: true,
+    ).then((value) {
+      cartData = CartModel.formJson(value.data["data"]);
+      // itemsInCart.clear();
+      // itemsInCart.add(cartData);
+
+      debugPrint(cartData?.subTotal);
+      emit(ViewCartSuccessState());
+      debugPrint(value.data.toString());
+    }).catchError((error) {
+      emit(ViewCartFailedState());
+      // debugPrint(error.data?.toString());
+    });
+  }
+
+  ///--------addToCart function ----------->
+
+  Future<void> decreaseQuantity(num? bookId) async {
+    emit(RemovedFromCartLoadingState());
+    await DioHelper.post(endPoint: EndPoints.removeFromCart, withToken: true, body: {
+      "book_id": bookId.toString(),
+    }).then((value) {
+      debugPrint(value.data.toString());
+      // debugPrint(value.data["message"]);
+      emit(DecreasedFromCartSuccessState());
+    }).catchError((error) {
+      if (error is DioException) {
+        debugPrint(error.response?.data.toString());
+        // debugPrint("Dio Exception **");
+        emit(DecreasedFromCartFailedState());
       }
-      return total;
-    }
+      debugPrint(error.toString());
+      // debugPrint(" NOT Dio Exception **");
+      emit(DecreasedFromCartFailedState());
+    });
+  }
+
+  ///-----remove item from cart ----------->
+
+  Future<void> removeFromCart(num? bookId) async {
+    emit(RemovedFromCartLoadingState());
+    await DioHelper.delete(
+      endPoint: EndPoints.deleteFromCart,
+      withToken: true,
+      params: {"book_id": bookId},
+    ).then((value) {
+      // debugPrint(value.data.toString());
+      // debugPrint(value.data["message"]);
+      // debugPrint(value.data);
+      emit(RemovedFromCartSuccessState());
+    }).catchError((error) {
+      if (error is DioException) {
+        // debugPrint(error.response?.data.toString());
+        // debugPrint("Dio Exception **");
+        emit(RemovedFromCartFailedState());
+        return;
+      }
+      // debugPrint(error.toString());
+      // debugPrint(" NOT Dio Exception **");
+      emit(RemovedFromCartFailedState());
+    });
+  }
+
+  ///---------------checkOut------------->
+  Future<void> checkOut() async {
+    emit(CheckOutLoadingState());
+    await DioHelper.post(
+      endPoint: EndPoints.checkOut,
+      withToken: true,
+      body: {
+        "name": nameController.text,
+        "email": emailController.text,
+        "phone": phoneController.text,
+        "address": addressController.text,
+        "lat": latitudeController.text,
+        "lng": longitudeController.text,
+        "payment_type": paymentTypeController.text,
+        "transaction_id": transactionIdController.text,
+      },
+    ).then((value) {
+      emit(CheckOutSuccessState(value.data["message"]));
+      // debugPrint(value.data.toString());
+    }).catchError((error) {
+      if (error is DioException) {
+        emit(CheckOutFailedState(error.response!.data["message"].toString()));
+        return;
+      }
+      emit(CheckOutFailedState("something went wrong in CheckOut"));
+    });
+  }
+
+  ///----------view User Orders------------->
+  Future<void> viewOrders() async {
+    emit(ViewOrdersLoadingState());
+    await DioHelper.get(
+      endPoint: EndPoints.viewAllOrders,
+      withToken: true,
+    ).then((value) {
+      ordersList.clear();
+      for (var element in value.data["data"]) {
+        OrdersModel order = OrdersModel.fromJson(element);
+        ordersList.add(order);
+      }
+
+      emit(ViewOrdersSuccessState());
+    }).catchError((error){
+      if(error is DioException){
+        emit(ViewOrdersFailedState(error.response!.data["message"].toString()));
+        return ;
+      }
+      emit(ViewOrdersFailedState("something went wrong in viewing orders"));
+    });
   }
 }

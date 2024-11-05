@@ -1,10 +1,12 @@
 import 'package:bookia_118/data/network/dio_helper.dart';
+import 'package:bookia_118/data/user_info_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../../data/local/shared_keys.dart';
 import '../../../data/network/end_points.dart';
+import '../../constants/app_strings.dart';
 import 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
@@ -14,6 +16,8 @@ class AuthCubit extends Cubit<AuthState> {
 
   final storage = const FlutterSecureStorage();
   bool hidden = true;
+  // List<UserInfoModel> userInformationList = [];
+  Map<String, dynamic> userInfoMap = {};
 
   TextEditingController nameController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
@@ -43,14 +47,14 @@ class AuthCubit extends Cubit<AuthState> {
     }).then((value) async {
       // to save the user token in flutterSecureStorage to skip the login screen  ⤵
       await storage.write(key: SharedKeys.token, value: value.data["data"]["token"]);
-      debugPrint(value.data.toString());
+      // debugPrint(value.data.toString());
       // debugPrint(value.data["data"]["token"]);
       // print("successful login ya 7oda ");
       emit(AuthSuccessState(value.data["data"]["name"]));
     }).catchError((error) {
       if (error is DioException) {
         // debugPrint(error.response?.data?["message"]);
-        debugPrint(error.response?.data.toString());
+        // debugPrint(error.response?.data.toString());
         emit(AuthFailedState(error.response?.data?["message"] ?? "something went wrong in login"));
         // emit(AuthFailedState(error.message ?? "something went wrong in login"));
         return;
@@ -68,12 +72,12 @@ class AuthCubit extends Cubit<AuthState> {
       withToken: true,
     ).then((value) async {
       const storage = FlutterSecureStorage();
-      debugPrint(value.data.toString());
+      // debugPrint(value.data.toString());
       await storage.deleteAll();
       emit(AuthSuccessState(value.data["message"]));
     }).catchError((error) {
       if (error is DioException) {
-        debugPrint(error.response?.toString());
+        // debugPrint(error.response?.toString());
         emit(AuthFailedState(error.response?.data?["message"] ?? "something went wrong in login"));
         return;
       }
@@ -92,11 +96,11 @@ class AuthCubit extends Cubit<AuthState> {
       "confirm_password": confirmPasswordController.text,
     }).then((value) async {
       await storage.write(key: SharedKeys.token, value: value.data["data"]["token"]);
-      debugPrint(value.data.toString());
+      // debugPrint(value.data.toString());
       emit(AuthSuccessState(value.data["data"]["name"]));
     }).catchError((error) {
       if (error is DioException) {
-        debugPrint(error.response?.data.toString());
+        // debugPrint(error.response?.data.toString());
         emit(AuthFailedState(error.response?.data?["message"] ?? "something went wrong in register"));
         return;
       }
@@ -111,12 +115,12 @@ class AuthCubit extends Cubit<AuthState> {
     await DioHelper.post(endPoint: EndPoints.forgotPassword, body: {
       "email": emailController.text,
     }).then((value) {
-      debugPrint(value.data.toString());
+      // debugPrint(value.data.toString());
       emit(AuthSuccessState(value.data["message"]));
       emit(ResendOtpSuccessState(value.data["message"]));
     }).catchError((error) {
       if (error is DioException) {
-        debugPrint(error.response?.data.toString());
+        // debugPrint(error.response?.data.toString());
         emit(AuthFailedState(error.response?.data?["message"] ?? "something went wrong in register"));
         emit(ResendOtpFailedState(error.response?.data?["message"] ?? "something went wrong in register"));
         return;
@@ -141,12 +145,12 @@ class AuthCubit extends Cubit<AuthState> {
       "email": emailController.text,
       "otp": otp,
     }).then((value) async {
-      debugPrint(value.data.toString());
+      // debugPrint(value.data.toString());
       emit(AuthSuccessState(value.data["message"]));
       await storage.write(key: SharedKeys.token, value: value.data["data"]["token"]);
     }).catchError((error) {
       if (error is DioException) {
-        debugPrint(error.response?.data.toString());
+        // debugPrint(error.response?.data.toString());
         emit(AuthFailedState(error.response?.data?["message"] ?? "something went wrong in register"));
         return;
       }
@@ -166,11 +170,11 @@ class AuthCubit extends Cubit<AuthState> {
       },
       withToken: true,
     ).then((value) {
-      debugPrint(value.data.toString());
+      // debugPrint(value.data.toString());
       emit(AuthSuccessState(value.data["message"]));
     }).catchError((error) {
       if (error is DioException) {
-        debugPrint(error.response?.statusMessage);
+        // debugPrint(error.response?.statusMessage);
         emit(AuthFailedState(error.response?.statusMessage ?? "something went wrong in login"));
         return;
       }
@@ -192,17 +196,16 @@ class AuthCubit extends Cubit<AuthState> {
         "address": addressController.text,
       },
     ).then((value) {
-      debugPrint(value.data.toString());
+      // debugPrint(value.data.toString());
       emit(UpdateProfileSuccessState(value.data["message"]));
-    }).catchError(( error){
-      if(error is DioException){
-        debugPrint(error.response?.data?["message"]);
+    }).catchError((error) {
+      if (error is DioException) {
+        // debugPrint(error.response?.data?["message"]);
         emit(UpdateProfileFailedState(error.response?.data?["message"]));
-      return ;
+        return;
       }
-      debugPrint(error.response?.data?["message"]);
+      // debugPrint(error.response?.data?["message"]);
       emit(UpdateProfileFailedState(" unknown error"));
-
     });
   }
 
@@ -215,21 +218,49 @@ class AuthCubit extends Cubit<AuthState> {
       withToken: true,
       body: {
         "current_password": passwordController.text,
-        "new_password":newPasswordController.text,
+        "new_password": newPasswordController.text,
         "confirm_password": confirmPasswordController.text,
       },
     ).then((value) {
-      debugPrint(value.data.toString());
+      // debugPrint(value.data.toString());
       emit(UpdatePasswordSuccessState(value.data["message"]));
-    }).catchError(( error){
-      if(error is DioException){
-        debugPrint(error.response?.data?["message"]);
+    }).catchError((error) {
+      if (error is DioException) {
+        // debugPrint(error.response?.data?["message"]);
         emit(UpdatePasswordFailedState(error.response?.data?["message"]));
-        return ;
+        return;
       }
-      debugPrint(error.response?.data?["message"]);
+      // debugPrint(error.response?.data?["message"]);
       emit(UpdatePasswordFailedState(" unknown error"));
+    });
+  }
 
+  ///--------get profile function------->
+
+  Future<void> getUserProfile() async {
+    emit(GetUserProfileLoading());
+    await DioHelper.get(
+      endPoint: EndPoints.getProfile,
+      withToken: true,
+    ).then((value) {
+      emit(GetUserProfileSuccess());
+      final data = value.data["data"];
+      userInfoMap.clear();
+      UserInfoModel userInfo = UserInfoModel.fromJson(data);
+      userInfoMap.addAll({
+        AppString.userId: userInfo.userId,
+        AppString.userName2: userInfo.userName,
+        AppString.userEmail: userInfo.userEmail,
+        AppString.address: userInfo.address,
+        AppString.image: userInfo.image,
+        AppString.lat: userInfo.lat,
+        AppString.lng: userInfo.lng,
+      });
+    }).catchError((error) {
+      if (error is DioException) {
+        return;
+      }
+      emit(GetUserProfileFailed());
     });
   }
 }
