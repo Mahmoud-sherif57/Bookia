@@ -1,6 +1,7 @@
-import 'package:bookia_118/data/categories_model.dart';
-import 'package:bookia_118/data/slider_model.dart';
-import '../book_model.dart';
+
+import '../models/book_model.dart';
+import '../models/categories_model.dart';
+import '../models/slider_model.dart';
 
 List<SliderModel> bannerList = [];
 List<CategoriesModel> categoryList = [];

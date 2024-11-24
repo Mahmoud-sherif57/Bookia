@@ -11,14 +11,16 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../core/constants/constants.dart';
 import '../../../../core/cubits/category_cubit/category_cubit.dart';
 import '../../../../core/cubits/category_cubit/category_state.dart';
-import '../../../checkOut/presentation/screen/check_out_screen.dart';
+import '../../../checkOut/presentation/screen/payment_ways_screen.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    CategoryCubit.get(context).viewCart();
+    final categoryCubit = context.read<CategoryCubit>();
+    categoryCubit.viewCart();
+    final cartData = categoryCubit.cartData;
     var size = MediaQuery.of(context).size;
 
     /// call the viewCart function when i navigate to the cart screen =====>
@@ -26,8 +28,7 @@ class CartScreen extends StatelessWidget {
       child: BlocConsumer<CategoryCubit, CategoryState>(
         listener: (context, state) {},
         builder: (context, state) {
-          final categoryCubit = context.read<CategoryCubit>();
-          final cartData = categoryCubit.cartData;
+          // final cartData =context.read<CategoryCubit>().cartData;
           return Scaffold(
             backgroundColor: AppColors.backGround,
             body: Padding(
@@ -38,9 +39,7 @@ class CartScreen extends StatelessWidget {
                   child: Column(
                     children: [
                       const ReusablePageName(text: AppString.myCart),
-                      const SizedBox(
-                        height: 10
-                      ),
+                      const SizedBox(height: 10),
 
                       ///--------the books in cart------->
                       Expanded(
@@ -239,15 +238,21 @@ class CartScreen extends StatelessWidget {
                       ),
 
                       ///-----the check out button------->
-                      Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Center(
-                          child: MainButton(
-                            height: 50,
-                            title: AppString.checkOut,
-                            onTap: () {
-                              AppFunctions.navigateTo(context, const CheckoutScreen());
-                            },
+                      Expanded(
+                        flex: 1,
+                        child: Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Center(
+                            child: MainButton(
+                              height: 50,
+                              title: AppString.checkOut,
+                              onTap: () {
+                                // AppFunctions.navigateTo(context, const CheckoutScreen());
+                                categoryCubit.fetchPaymentWays().then(
+                                      (value) => AppFunctions.navigateTo(context, PaymentWaysScreen()),
+                                );
+                              },
+                            ),
                           ),
                         ),
                       )

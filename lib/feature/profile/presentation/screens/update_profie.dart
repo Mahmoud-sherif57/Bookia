@@ -6,7 +6,6 @@ import 'package:bookia_118/core/widgets/reusable_text_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-
 import '../../../../core/cubits/auth_cubit/auth_cubit.dart';
 import '../../../../core/cubits/auth_cubit/auth_state.dart';
 import '../../../../core/widgets/reusable_page_name.dart';
@@ -21,6 +20,7 @@ class UpdateProfile extends StatelessWidget {
       listener: (context, state) {
         if (state is UpdateProfileSuccessState) {
           EasyLoading.showSuccess(" ${state.msg}");
+          EasyLoading.dismiss();
         } else if (state is UpdateProfileFailedState) {
           EasyLoading.showError(state.error);
           EasyLoading.dismiss();
@@ -37,9 +37,7 @@ class UpdateProfile extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(
-                    height: 25
-                  ),
+                  const SizedBox(height: 25),
 
                   ///------the My order text-------->
                   const Row(
@@ -59,11 +57,23 @@ class UpdateProfile extends StatelessWidget {
                       child: Stack(
                         children: [
                           ///-----the person icon ----->
-                          const CircleAvatar(
-                            backgroundColor: AppColors.primary,
-                            radius: 60,
-                            child: Icon(Icons.person, size: 100, color: AppColors.ivory),
-                          ),
+                          authCubit.userPhoto == null
+                              // authCubit.userImage == null
+                              ? const CircleAvatar(
+                                  backgroundColor: AppColors.primary,
+                                  radius: 60,
+                                  child: Icon(Icons.person, size: 100, color: AppColors.ivory),
+                                )
+                              : CircleAvatar(
+                                  // backgroundImage: authCubit.userImage != null
+                                  //     ? FileImage(authCubit.userImage as File)
+                                  //     : null,
+                                  backgroundImage: authCubit.userPhoto != null
+                                      ? NetworkImage(authCubit.userPhoto ?? "")
+                                      : null,
+                                  backgroundColor: AppColors.primary,
+                                  radius: 60,
+                                ),
 
                           ///-----the camera icon ----->
                           Positioned(
@@ -75,7 +85,7 @@ class UpdateProfile extends StatelessWidget {
                               child: IconButton(
                                 color: AppColors.primary,
                                 onPressed: () {
-                                  // authCubit.pickImageFromGallery();
+                                  authCubit.getUserImage();
                                   // authCubit.pickedImage();
                                 },
                                 icon: const Icon(Icons.add_a_photo_rounded, size: 22),
@@ -92,7 +102,7 @@ class UpdateProfile extends StatelessWidget {
                   ReusableTextFormField(
                     controller: authCubit.nameController,
                     keyboardType: TextInputType.text,
-                    hintText: "",
+                    hintText: authCubit.userInfoGoogleModel?.displayName ?? "",
                     labelText: AppString.userName,
                     obscureText: false,
                   ),
@@ -102,7 +112,7 @@ class UpdateProfile extends StatelessWidget {
                   ReusableTextFormField(
                     controller: authCubit.emailController,
                     keyboardType: TextInputType.emailAddress,
-                    hintText: "",
+                    hintText: authCubit.userInfoGoogleModel?.email ?? "",
                     labelText: AppString.email,
                     obscureText: false,
                   ),

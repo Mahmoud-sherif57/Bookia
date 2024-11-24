@@ -8,7 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/theming/app_colors.dart';
-import '../../../../data/book_model.dart';
+import '../../../../data/models/book_model.dart';
 
 class BookDetails extends StatefulWidget {
   const BookDetails({super.key, required this.data});

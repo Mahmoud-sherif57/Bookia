@@ -14,11 +14,9 @@ import 'package:flutter/material.dart';
 //       MaterialPageRoute(builder: (context) => view), (route) => false);
 // }
 
-
-
 class AppFunctions {
   //1
-  static Future navigateTo(BuildContext context,Widget screen) {
+  static Future navigateTo(BuildContext context, Widget screen) {
     return Navigator.push(context, MaterialPageRoute(builder: (context) {
       return screen;
     }));
@@ -26,10 +24,9 @@ class AppFunctions {
 
   //2
   static navigateAndReplacement(BuildContext context, Widget screen) {
-    return Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (context) {
-          return screen;
-        }));
+    return Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+      return screen;
+    }));
   }
 
   //3
@@ -39,7 +36,7 @@ class AppFunctions {
       MaterialPageRoute(builder: (context) {
         return screen;
       }),
-          (route) => false,
+      (route) => false,
     );
   }
 
@@ -61,7 +58,4 @@ class AppFunctions {
   //     icon: const Icon(Icons.translate),
   //   );
   // }
-
-
-
 }

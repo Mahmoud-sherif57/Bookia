@@ -8,9 +8,11 @@ class AppString {
       "Don't worry! It occurs. Please enter the email address linked with your account.";
   static const String registerWelcomeMessage = "Hello! Register to get started";
   static const String forgotPassword = "Forgot Password?";
+  static const String chatWithSupport = "Chat with support";
   static const String currentPassword = "currentPassword";
   static const String updatePassword = "update Password";
   static const String updateProfile = "Update Profile";
+  static const String paymentWays = "Payment Way";
   static const String orLogInWith = "Or Login with";
   static const String orRegisterWith = "Or Register with";
   static const String doNotHaveAnAccount = 'Don’t have an account?';

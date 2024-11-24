@@ -6,7 +6,7 @@ import '../../../../core/cubits/category_cubit/category_state.dart';
 import '../../../../core/theming/app_colors.dart';
 import '../../../../core/theming/styles.dart';
 import '../../../../core/widgets/app_shimmer.dart';
-import '../../../../data/book_model.dart';
+import '../../../../data/models/book_model.dart';
 
 class SearchScreen extends StatelessWidget {
   const SearchScreen({super.key});

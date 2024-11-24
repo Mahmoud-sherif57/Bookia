@@ -2,7 +2,6 @@ import 'package:bookia_118/core/constants/app_strings.dart';
 import 'package:bookia_118/core/cubits/category_cubit/category_state.dart';
 import 'package:bookia_118/core/theming/styles.dart';
 import 'package:bookia_118/core/widgets/app_shimmer.dart';
-import 'package:bookia_118/data/categories_model.dart';
 import 'package:bookia_118/data/local/app_data.dart';
 import 'package:bookia_118/feature/home/presentation/screens/notification_screen.dart';
 import 'package:bookia_118/core/widgets/the_book_card_widget.dart';
@@ -11,11 +10,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../../../../core/constants/constants.dart';
 import '../../../../core/cubits/category_cubit/category_cubit.dart';
+import '../../../../core/cubits/homeScreen_cubit/home_screen_cubit.dart';
 import '../../../../core/functions/navigation.dart';
 import '../../../../core/theming/app_colors.dart';
-import '../../../../data/book_model.dart';
+import '../../../../data/models/book_model.dart';
+import '../../../../data/models/categories_model.dart';
 import 'books_by_category_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -25,6 +27,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // final categoryCubit = CategoryCubit.get(context);
     final categoryCubit = context.read<CategoryCubit>();
+    final homeScreenCubit = context.read<HomeScreenCubit>();
     var size = MediaQuery.of(context).size;
     return BlocConsumer<CategoryCubit, CategoryState>(
       listener: (context, state) {
@@ -68,6 +71,8 @@ class HomeScreen extends StatelessWidget {
                               height: 30,
                               child: InkWell(
                                   onTap: () {
+                                    // throw Exception('This is test exception');
+
                                     categoryCubit.getAllBooks();
                                   },
                                   child: Image.asset(AppImages.splashLogo, fit: BoxFit.cover)),
@@ -104,7 +109,7 @@ class HomeScreen extends StatelessWidget {
                               child: PageView.builder(
                                 pageSnapping: true,
                                 padEnds: true,
-                                // controller: homeCubit.controller,
+                                controller: homeScreenCubit.controller,
                                 physics: const BouncingScrollPhysics(),
                                 itemCount: bannerList.length,
                                 itemBuilder: (context, index) {
@@ -155,20 +160,23 @@ class HomeScreen extends StatelessWidget {
                             ),
 
                             ///-----------make the indicator------>
-                            // Align(
-                            //   alignment: Alignment.center,
-                            //   child: SmoothPageIndicator(
-                            //     controller: homeCubit.controller,
-                            //     count: bannerList.length,
-                            //     effect: const ExpandingDotsEffect(
-                            //       dotColor: AppColors.primary,
-                            //       activeDotColor: AppColors.primary,
-                            //       dotWidth: 8.0,
-                            //       dotHeight: 8.0,
-                            //       strokeWidth: 1.5,
-                            //     ),
-                            //   ),
-                            // ),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              child: Align(
+                                alignment: Alignment.center,
+                                child: SmoothPageIndicator(
+                                  controller: homeScreenCubit.controller,
+                                  count: bannerList.length,
+                                  effect: const ExpandingDotsEffect(
+                                    dotColor: AppColors.primary,
+                                    activeDotColor: AppColors.primary,
+                                    dotWidth: 8.0,
+                                    dotHeight: 8.0,
+                                    strokeWidth: 1.5,
+                                  ),
+                                ),
+                              ),
+                            ),
                           ],
                         ),
 
@@ -240,6 +248,7 @@ class HomeScreen extends StatelessWidget {
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                           itemCount: booksListData.length,
+                          cacheExtent: 500, // تحميل مسبق على بعد 500 بكسل
                           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                               childAspectRatio: 0.54, crossAxisCount: 2),
                           itemBuilder: (context, index) {

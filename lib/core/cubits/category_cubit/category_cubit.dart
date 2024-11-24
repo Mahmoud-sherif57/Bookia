@@ -1,20 +1,28 @@
-import 'package:bookia_118/data/book_model.dart';
-import 'package:bookia_118/data/cart_model.dart';
-import 'package:bookia_118/data/order_model.dart';
+import 'package:bookia_118/core/functions/navigation.dart';
+import 'package:bookia_118/feature/checkOut/presentation/screen/web_view_screen.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../data/categories_model.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../../data/local/app_data.dart';
+import '../../../data/models/book_model.dart';
+import '../../../data/models/cart_model.dart';
+import '../../../data/models/categories_model.dart';
+import '../../../data/models/order_model.dart';
+import '../../../data/models/payment_method_model.dart';
+import '../../../data/models/slider_model.dart';
+import '../../../data/models/visa_card_response_model.dart';
 import '../../../data/network/dio_helper.dart';
 import '../../../data/network/end_points.dart';
-import '../../../data/slider_model.dart';
 import 'category_state.dart';
 
 class CategoryCubit extends Cubit<CategoryState> {
   CategoryCubit() : super(InitialCategoryState());
 
   static CategoryCubit get(context) => BlocProvider.of<CategoryCubit>(context);
+  final storage = const FlutterSecureStorage();
+  PaymentMethodModel? paymentMethodModel;
+  VisaCardResponseModel? visaCardResponseModel;
 
   List itemsInWishList = [];
   List itemsInCart = [];
@@ -284,16 +292,13 @@ class CategoryCubit extends Cubit<CategoryState> {
       "book_id": bookId.toString(),
     }).then((value) {
       debugPrint(value.data.toString());
-      // debugPrint(value.data["message"]);
       emit(DecreasedFromCartSuccessState());
     }).catchError((error) {
       if (error is DioException) {
         debugPrint(error.response?.data.toString());
-        // debugPrint("Dio Exception **");
         emit(DecreasedFromCartFailedState());
       }
       debugPrint(error.toString());
-      // debugPrint(" NOT Dio Exception **");
       emit(DecreasedFromCartFailedState());
     });
   }
@@ -307,19 +312,12 @@ class CategoryCubit extends Cubit<CategoryState> {
       withToken: true,
       params: {"book_id": bookId},
     ).then((value) {
-      // debugPrint(value.data.toString());
-      // debugPrint(value.data["message"]);
-      // debugPrint(value.data);
       emit(RemovedFromCartSuccessState());
     }).catchError((error) {
       if (error is DioException) {
-        // debugPrint(error.response?.data.toString());
-        // debugPrint("Dio Exception **");
         emit(RemovedFromCartFailedState());
         return;
       }
-      // debugPrint(error.toString());
-      // debugPrint(" NOT Dio Exception **");
       emit(RemovedFromCartFailedState());
     });
   }
@@ -335,6 +333,7 @@ class CategoryCubit extends Cubit<CategoryState> {
         "email": emailController.text,
         "phone": phoneController.text,
         "address": addressController.text,
+        // take the lat&lng from map
         "lat": latitudeController.text,
         "lng": longitudeController.text,
         "payment_type": paymentTypeController.text,
@@ -342,7 +341,6 @@ class CategoryCubit extends Cubit<CategoryState> {
       },
     ).then((value) {
       emit(CheckOutSuccessState(value.data["message"]));
-      // debugPrint(value.data.toString());
     }).catchError((error) {
       if (error is DioException) {
         emit(CheckOutFailedState(error.response!.data["message"].toString()));
@@ -366,12 +364,82 @@ class CategoryCubit extends Cubit<CategoryState> {
       }
 
       emit(ViewOrdersSuccessState());
-    }).catchError((error){
-      if(error is DioException){
+    }).catchError((error) {
+      if (error is DioException) {
         emit(ViewOrdersFailedState(error.response!.data["message"].toString()));
-        return ;
+        return;
       }
       emit(ViewOrdersFailedState("something went wrong in viewing orders"));
     });
+  }
+
+  ///-----------------Adding payment way------------>
+  //we used fawaterak payment way
+  bool paymentMethodsIsLoading = false;
+  final apiUrl1 = EndPoints.paymentBaseUrl1;
+  final accessToken = EndPoints.paymentAccessToken;
+  Future<void> fetchPaymentWays() async {
+    paymentMethodsIsLoading = true;
+    Dio dio = Dio(
+      BaseOptions(headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $accessToken',
+      }),
+    );
+    try {
+      var response = await dio.get(apiUrl1);
+      paymentMethodModel = PaymentMethodModel.fromJson(response.data);
+      debugPrint(response.data);
+    } catch (error) {
+      debugPrint(error as String?);
+      throw Exception(error);
+    }
+    paymentMethodsIsLoading = false;
+  }
+
+  ///------------------------>
+  final apiUrl2 = EndPoints.paymentBaseUrl2;
+  final paymentAccessToken = EndPoints.paymentAccessToken;
+  Future<void> processPaymentWay(BuildContext context, int paymentMethodId) async {
+    Dio dio = Dio(
+      BaseOptions(headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $accessToken',
+      }),
+    );
+    try {
+      final requestData = {
+        'payment_method_id': paymentMethodId,
+        'cartTotal': '100',
+        'currency': 'EGP',
+        'customer': {
+          'first_name': 'test',
+          'last_name': 'test',
+          'email': 'test@test.test',
+          'phone': '01000000000',
+          'address': 'test address',
+        },
+        'redirectionUrls': {
+          'successUrl': 'https://dev.fawaterk.com/success',
+          'failUrl': 'https://dev.fawaterk.com/fail',
+          'pendingUrl': 'https://dev.fawaterk.com/pending',
+        },
+        'cartItems': [
+          {
+            'name': 'test',
+            'price': '100',
+            'quantity': '1',
+          },
+        ],
+      };
+      var response = await dio.post(apiUrl2, data: requestData);
+      visaCardResponseModel = VisaCardResponseModel.fromJson(response.data);
+      if (paymentMethodId == 2) {
+        AppFunctions.navigateTo(
+            context, WebViewScreen(url: visaCardResponseModel!.data!.paymentData!.redirectTo!));
+      }
+    } catch (e) {
+      return ;
+    }
   }
 }

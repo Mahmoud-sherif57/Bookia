@@ -6,8 +6,7 @@ class BookModel {
   String? categoryName;
   String? price;
   String? offer;
-  bool? isInTheWishList ;
-  // bool? isOnTheCart;
+  bool? isInTheWishList;
 
   BookModel({
     required this.categoryId,
@@ -18,10 +17,8 @@ class BookModel {
     required this.price,
     required this.offer,
     this.isInTheWishList = false,
-    // this.isOnTheCart = false,
   });
 
-  // this named constructor to turn the data that comes from API from json to object
   BookModel.fromJson(Map<String, dynamic> json) {
     categoryId = json["category_id"];
     bookId = json["book_id"];

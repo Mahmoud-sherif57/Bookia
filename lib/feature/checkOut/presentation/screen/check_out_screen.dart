@@ -1,5 +1,6 @@
 import 'package:bookia_118/core/theming/styles.dart';
 import 'package:bookia_118/core/widgets/reusable_page_name.dart';
+import 'package:bookia_118/feature/checkOut/presentation/screen/payment_ways_screen.dart';
 import 'package:bookia_118/feature/checkOut/presentation/screen/success_check_out.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,10 +27,12 @@ class CheckoutScreen extends StatelessWidget {
     return SafeArea(
       child: BlocConsumer<CategoryCubit, CategoryState>(
         listener: (context, state) {
+          // if (state is CheckOutSuccessState) {
+          //   AppFunctions.navigateTo(context, const SuccessCheckout());
+          // }
           if (state is CheckOutSuccessState) {
             AppFunctions.navigateTo(context, const SuccessCheckout());
           }
-
           if (state is CheckOutSuccessState) {
             EasyLoading.showSuccess(state.msg);
             EasyLoading.dismiss();
@@ -136,6 +139,7 @@ class CheckoutScreen extends StatelessWidget {
                           const SizedBox(height: 12),
 
                           ///-------the payment type field-------->
+                          /// make the user choice between cash(0) or credit(1) and make function to return the type
                           ReusableTextFormField(
                             controller: categoryCubit.paymentTypeController,
                             keyboardType: TextInputType.text,
@@ -176,7 +180,10 @@ class CheckoutScreen extends StatelessWidget {
                               title: AppString.submitOrder,
                               onTap: () {
                                 // if (cartData?.total != null) return;
-                                categoryCubit.checkOut();
+                                categoryCubit.fetchPaymentWays().then(
+                                      (value) => AppFunctions.navigateTo(context, PaymentWaysScreen()),
+                                    );
+                                // categoryCubit.checkOut();
                                 // AppFunctions.navigateTo(context, const SuccessCheckout());
                               },
                             ),

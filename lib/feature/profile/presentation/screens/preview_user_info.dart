@@ -1,3 +1,4 @@
+
 import 'package:bookia_118/core/functions/navigation.dart';
 import 'package:bookia_118/feature/wrapper_screen/presentation/screen/wrapper_screen.dart';
 import 'package:flutter/material.dart';
@@ -69,41 +70,53 @@ class PreviewUserInfo extends StatelessWidget {
                       const SizedBox(height: 25),
 
                       ///-------user information------>
-                      const CircleAvatar(
-                        backgroundColor: AppColors.primary,
-                        radius: 55,
-                        child: Icon(
-                          Icons.person,
-                          size: 100,
-                          color: AppColors.ivory,
-                        ),
-                      ),
+                      authCubit.userPhoto == null
+                          // authCubit.userImage == null
+                          ? const CircleAvatar(
+                              backgroundColor: AppColors.primary,
+                              radius: 55,
+                              child: Icon(
+                                Icons.person,
+                                size: 100,
+                                color: AppColors.ivory,
+                              ),
+                            )
+                          : CircleAvatar(
+                              backgroundImage: authCubit.userPhoto != null
+                                  ? NetworkImage(authCubit.userPhoto ?? "")
+                                  : null,
+                              // authCubit.userPhoto != null ? FileImage(authCubit.userPhoto as File) : null,
+                              backgroundColor: AppColors.primary,
+                              radius: 55,
+                            ),
                       const SizedBox(height: 35),
 
                       ///--------settings fields------->
                       Column(
                         children: [
                           UserInfoFieldWidget(
-                            text: '  ${AppString.userName2} :${authCubit.userInfoMap[AppString.userName2]}',
+                            // text: '  ${AppString.userName2} :${authCubit.userInfoMap[AppString.userName2]}',
+                            text: '  ${AppString.userName2} :${authCubit.userName}',
                           ),
                           const SizedBox(height: 25),
                           UserInfoFieldWidget(
-                            text: '${AppString.userEmail} : ${authCubit.userInfoMap[AppString.userEmail]} ',
+                            text: '${AppString.userEmail} : ${authCubit.userEmail}',
                           ),
                           const SizedBox(height: 25),
                           UserInfoFieldWidget(
-                            text: '${AppString.address} : ${authCubit.userInfoMap[AppString.address]}  ',
+                            text:
+                                '${AppString.address} : ${authCubit.userInfoMap[AppString.address] ?? ""}  ',
                           ),
                           const SizedBox(height: 25),
                           Row(
                             children: [
                               UserInfoFieldWidget(
-                                text: '${AppString.lat} :${authCubit.userInfoMap[AppString.lat]} ',
+                                text: '${AppString.lat} :${authCubit.userInfoMap[AppString.lat] ?? ""} ',
                                 width: 160,
                               ),
                               const Spacer(),
                               UserInfoFieldWidget(
-                                text: '${AppString.lng} : ${authCubit.userInfoMap[AppString.lng]}',
+                                text: '${AppString.lng} : ${authCubit.userInfoMap[AppString.lng] ?? ""}',
                                 width: 160,
                               ),
                             ],

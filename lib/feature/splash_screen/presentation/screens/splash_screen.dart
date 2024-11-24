@@ -1,6 +1,6 @@
 import 'package:bookia_118/core/constants/app_strings.dart';
 import 'package:bookia_118/core/constants/constants.dart';
-import 'package:bookia_118/core/cubits/category_cubit/category_cubit.dart';
+import 'package:bookia_118/core/cubits/auth_cubit/auth_cubit.dart';
 import 'package:bookia_118/core/functions/navigation.dart';
 import 'package:bookia_118/core/theming/styles.dart';
 import 'package:bookia_118/data/local/shared_keys.dart';
@@ -21,10 +21,15 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+    AuthCubit.get(context).checkUserToken(context);
+    AuthCubit.get(context).getDeviceToken();
+
     Future.delayed(const Duration(seconds: 3), () async {
       const storage = FlutterSecureStorage();
       String? value = await storage.read(key: SharedKeys.token);
-      if(!mounted) return ;   // this line to avoid the message( info: Don't use 'BuildContext's across async gaps. )
+      // this line to avoid the message( info: Don't use 'BuildContext's across async gaps. )⤵
+      if (!mounted) return;
+
       if (value != null) {
         AppFunctions.navigateAndRemove(context, const WrapperHomeScreen());
       } else {
@@ -35,7 +40,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    CategoryCubit.get(context).getAllBooks();
     var size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: AppColors.backGround,

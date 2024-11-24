@@ -18,99 +18,97 @@ class ResetPassword extends StatelessWidget {
   Widget build(BuildContext context) {
     final authCubit = AuthCubit.get(context);
     return BlocConsumer<AuthCubit, AuthState>(
-  listener: (context, state) {
-    if (state is UpdatePasswordSuccessState) {
-      EasyLoading.showSuccess(" ${state.msg}");
-    } else if (state is UpdatePasswordFailedState) {
-      EasyLoading.showError(state.error);
-      EasyLoading.dismiss();
-    } else if (state is UpdatePasswordLoadingState) {
-      EasyLoading.show(status: "loading..");
-    }
-  },
-  builder: (context, state) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      backgroundColor: AppColors.backGround,
-      body: Padding(
-        padding: const EdgeInsets.all(22.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(
-                height: 25
-              ),
-              const AppBackButton(),
-              const SizedBox(
-                height: 74,
-              ),
-              SizedBox(
-                height: 39,
-                child: Center(
-                  child: Text(
-                    AppString.newPassword,
-                    style: font30RegularDark,
+      listener: (context, state) {
+        if (state is UpdatePasswordSuccessState) {
+          EasyLoading.showSuccess(" ${state.msg}");
+        } else if (state is UpdatePasswordFailedState) {
+          EasyLoading.showError(state.error);
+          EasyLoading.dismiss();
+        } else if (state is UpdatePasswordLoadingState) {
+          EasyLoading.show(status: "loading..");
+        }
+      },
+      builder: (context, state) {
+        return Scaffold(
+          resizeToAvoidBottomInset: false,
+          backgroundColor: AppColors.backGround,
+          body: Padding(
+            padding: const EdgeInsets.all(22.0),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 25),
+                  const AppBackButton(),
+                  const SizedBox(
+                    height: 74,
                   ),
-                ),
+                  SizedBox(
+                    height: 39,
+                    child: Center(
+                      child: Text(
+                        AppString.newPassword,
+                        style: font30RegularDark,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 44),
+
+                  ///------------the current password field---------->
+                  ReusableTextFormField(
+                    controller: authCubit.passwordController,
+                    hintText: "",
+                    labelText: AppString.currentPassword,
+                    // suffixIcon: IconButton(
+                    //   onPressed: () {},
+                    //   icon: const Icon(Icons.remove_red_eye),
+                    // ),
+                    obscureText: false,
+                  ),
+                  const SizedBox(height: 26),
+
+                  ///-----------the new password field---------->
+                  ReusableTextFormField(
+                    controller: authCubit.newPasswordController,
+                    hintText: "",
+                    labelText: AppString.newPassword,
+                    // suffixIcon: IconButton(
+                    //   onPressed: () {},
+                    //   icon: const Icon(Icons.remove_red_eye),
+                    // ),
+                    obscureText: false,
+                  ),
+                  const SizedBox(height: 26),
+
+                  ///-----------the confirm password field---------->
+                  ReusableTextFormField(
+                    controller: authCubit.confirmPasswordController,
+                    hintText: "",
+                    labelText: AppString.confirmPassword,
+                    // suffixIcon: IconButton(
+                    //   onPressed: () {},
+                    //   icon: const Icon(Icons.remove_red_eye),
+                    // ),
+                    obscureText: false,
+                  ),
+                  const SizedBox(height: 45),
+
+                  ///------------the reset password button---------->
+                  Center(
+                    child: MainButton(
+                      onTap: () {
+                        authCubit.updatePassword();
+                        // AppFunctions.navigatePop(context);
+                      },
+                      title: AppString.updatePassword,
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(
-                height: 44
-              ),
-              ///------------the current password field---------->
-               ReusableTextFormField(
-                controller: authCubit.passwordController,
-                hintText: "",
-                labelText: AppString.currentPassword,
-                // suffixIcon: IconButton(
-                //   onPressed: () {},
-                //   icon: const Icon(Icons.remove_red_eye),
-                // ),
-                obscureText: false,
-              ),
-              const SizedBox(height: 26),
-              ///-----------the new password field---------->
-              ReusableTextFormField(
-                controller: authCubit.newPasswordController,
-                hintText: "",
-                labelText: AppString.newPassword,
-                // suffixIcon: IconButton(
-                //   onPressed: () {},
-                //   icon: const Icon(Icons.remove_red_eye),
-                // ),
-                obscureText: false,
-              ),
-              const SizedBox(height: 26),
-              ///-----------the confirm password field---------->
-              ReusableTextFormField(
-                controller: authCubit.confirmPasswordController,
-                hintText: "",
-                labelText: AppString.confirmPassword,
-                // suffixIcon: IconButton(
-                //   onPressed: () {},
-                //   icon: const Icon(Icons.remove_red_eye),
-                // ),
-                obscureText: false,
-              ),
-              const SizedBox(
-                height: 45
-              ),
-              ///------------the reset password button---------->
-              Center(
-                child: MainButton(
-                  onTap: () {
-                    authCubit.updatePassword();
-                    // AppFunctions.navigatePop(context);
-                  },
-                  title: AppString.updatePassword,
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
-  },
-);
   }
 }

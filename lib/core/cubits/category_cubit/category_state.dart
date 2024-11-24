@@ -111,3 +111,9 @@ class ViewOrdersFailedState extends CategoryState {
 }
 
 /// ===============================================================>
+class PaymentWayLoadingState extends CategoryState {}
+class PaymentWaySuccessState extends CategoryState {}
+class PaymentWayFailedState extends CategoryState {
+  final String error ;
+  PaymentWayFailedState(this.error);
+}

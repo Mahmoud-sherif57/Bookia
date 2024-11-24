@@ -23,6 +23,7 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authCubit = AuthCubit.get(context);
+    // CategoryCubit.get(context).checkUserToken(context);
     return SafeArea(
       child: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
@@ -116,19 +117,28 @@ class LoginScreen extends StatelessWidget {
                     const CenteredTextDivider(
                         color: AppColors.border, text: AppString.orLogInWith, thickness: 2),
                     const SizedBox(height: 21),
-                    const Row(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         SocialAuth(
                           image: AppImages.facebookSVG,
+                          onTap: () {
+                            authCubit.signInWithFacebook(context);
+                          },
                         ),
-                        SizedBox(width: 8),
+                        const SizedBox(width: 8),
                         SocialAuth(
                           image: AppImages.googleSVG,
+                          onTap: () {
+                            authCubit.logInWithGoogle(context).then((data) {
+                              debugPrint(data?.googleSignInAuthentication.accessToken);
+                            });
+                          },
                         ),
-                        SizedBox(width: 8),
-                        SocialAuth(
-                          image: AppImages.appleSVG,
-                        ),
+                        // const SizedBox(width: 8),
+                        // const SocialAuth(
+                        //   image: AppImages.appleSVG,
+                        // ),
                       ],
                     ),
 

@@ -5,6 +5,8 @@ plugins {
     id "dev.flutter.flutter-gradle-plugin"
 }
 
+apply plugin: 'com.google.gms.google-services'
+
 android {
     namespace = "com.example.bookia_118"
     compileSdk = flutter.compileSdkVersion
@@ -24,7 +26,9 @@ android {
         applicationId = "com.example.bookia_118"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
+        minSdk = 23
+//        minSdk = 21
+//        minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
@@ -35,6 +39,10 @@ android {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.debug
+            minifyEnabled true    // تفعيل تصغير الكود (code shrinking)
+            shrinkResources true  // تفعيل حذف الموارد الغير مستخدمة
+
+
         }
     }
 }

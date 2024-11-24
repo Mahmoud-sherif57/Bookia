@@ -15,7 +15,7 @@ class ReusableTextFormField extends StatelessWidget {
     this.validator,
   });
 
-  final String hintText;
+  final String? hintText;
   final String labelText;
   final TextEditingController? controller;
   final TextInputType? keyboardType;

@@ -21,7 +21,7 @@ class ReusableRowForCart extends StatelessWidget {
           const Spacer(),
           Text(
             // "$price \$",
-            price != null ? "${double.parse(price!).toStringAsFixed(2)} \$" : "-",
+            price != null ? "${double.tryParse(price ?? "")?.toStringAsFixed(2) ?? "0.00 \$"} " : "0.00 \$",
             style: style ?? font16MediumDark,
             // style: font20BoldDark,
           ),

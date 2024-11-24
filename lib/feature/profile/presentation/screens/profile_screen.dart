@@ -17,6 +17,8 @@ import '../../../../core/widgets/reusable_page_name.dart';
 import '../../../../core/widgets/setting_profile_field_widget.dart';
 import 'package:animate_do/animate_do.dart';
 
+import 'chat_screen.dart';
+
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
@@ -24,7 +26,8 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     final authCubit = AuthCubit.get(context);
-    authCubit.getUserProfile();
+    // authCubit.getUserProfile();
+    authCubit.getUserDataFromPrefs();
     CategoryCubit.get(context).viewOrders();
     return SafeArea(
       child: BlocConsumer<AuthCubit, AuthState>(
@@ -39,7 +42,7 @@ class ProfileScreen extends StatelessWidget {
             EasyLoading.show(status: "loading..");
           }
           if (state is GetUserProfileSuccess) {
-            // EasyLoading.showSuccess('Success');
+            EasyLoading.showSuccess('Success');
             EasyLoading.dismiss();
             // AppFunctions.navigateAndRemove(context, const PreviewUserInfo());
           } else if (state is GetUserProfileFailed) {
@@ -47,7 +50,6 @@ class ProfileScreen extends StatelessWidget {
             EasyLoading.dismiss();
           } else if (state is GetUserProfileLoading) {
             EasyLoading.show(status: "loading..");
-
           }
         },
         builder: (context, state) {
@@ -75,28 +77,40 @@ class ProfileScreen extends StatelessWidget {
                             onTap: () {
                               AppFunctions.navigateTo(context, const PreviewUserInfo());
                             },
-                            child: const CircleAvatar(
-                              backgroundColor: AppColors.primary,
-                              radius: 35,
-                              child: Icon(
-                                Icons.person,
-                                size: 50,
-                                color: AppColors.ivory,
-                              ),
-                            ),
+                            // child: authCubit.userImage == null
+                            child: authCubit.userPhoto == null
+                                ? const CircleAvatar(
+                                    backgroundColor: AppColors.primary,
+                                    radius: 35,
+                                    child: Icon(
+                                      Icons.person,
+                                      size: 50,
+                                      color: AppColors.ivory,
+                                    ),
+                                  )
+                                : CircleAvatar(
+                                    backgroundImage: authCubit.userPhoto != null
+                                        // backgroundImage: authCubit.userImage != null
+                                        // ? FileImage(authCubit.userImage as File)
+                                        ? NetworkImage(authCubit.userPhoto ?? "")
+                                        : null,
+                                    backgroundColor: AppColors.primary,
+                                    radius: 35,
+                                  ),
                           ),
                           const SizedBox(width: 15),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                authCubit.userInfoMap[AppString.userName2 ] ?? "",
+                                authCubit.userName ?? "userName : ",
+                                // authCubit.userInfoMap[AppString.userName2] ?? "",
                                 // 'Eng. Mahmoud sherif',
                                 style: font20BoldDark,
                               ),
                               Text(
-                                authCubit.userInfoMap[AppString.email] ?? "" ,
-                                // authCubit.userInfoMap[AppString.email] ?? "" ,
+                                authCubit.userEmail ?? " username :",
+                                // authCubit.userInfoMap[AppString.email] ?? "",
                                 // "mahmoudsherif388@gmail.com",
                                 style: font14RegularDarkGray,
                                 overflow: TextOverflow.ellipsis,
@@ -112,7 +126,6 @@ class ProfileScreen extends StatelessWidget {
                         children: [
                           SettingProfileFieldsField(
                             onPressed: () {
-
                               AppFunctions.navigateTo(context, const MyOrders());
                             },
                             text: AppString.myOrder,
@@ -132,8 +145,11 @@ class ProfileScreen extends StatelessWidget {
                             text: AppString.resetPassword,
                           ),
                           const SizedBox(height: 25),
-                          const SettingProfileFieldsField(
-                            text: AppString.faq,
+                           SettingProfileFieldsField(
+                             onPressed:(){
+                               AppFunctions.navigateTo(context , const ChatScreen());
+                             },
+                            text: AppString.chatWithSupport,
                           ),
                           const SizedBox(height: 25),
                           const SettingProfileFieldsField(
@@ -163,6 +179,7 @@ class ProfileScreen extends StatelessWidget {
                                           child: const Text("No")),
                                       TextButton(
                                           onPressed: () {
+                                            AuthCubit.get(context).logOutGoogle();
                                             AuthCubit.get(context).logOut();
                                           },
                                           child: const Text("YES")),

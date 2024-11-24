@@ -3,11 +3,11 @@ import 'package:bookia_118/core/theming/styles.dart';
 import 'package:bookia_118/feature/home/presentation/screens/book_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../data/models/book_model.dart';
 import '../cubits/category_cubit/category_cubit.dart';
 import '../cubits/category_cubit/category_state.dart';
 import '../functions/navigation.dart';
 import '../theming/app_colors.dart';
-import '../../data/book_model.dart';
 
 class TheBookCardWidget extends StatelessWidget {
   const TheBookCardWidget({

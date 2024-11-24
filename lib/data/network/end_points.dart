@@ -24,4 +24,8 @@ class EndPoints {
   static const calckShipping = 'calck_shipping';
   static const viewAllOrders = 'orders';
   static const checkOut = 'checkout';
+  static const paymentBaseUrl1 =  "https://staging.fawaterk.com/api/v2/getPaymentmethods" ;
+  static const paymentAccessToken =  'd83a5d07aaeb8442dcbe259e6dae80a3f2e21a3a581e1a5acd' ;
+  static const paymentBaseUrl2 =  "https://staging.fawaterk.com/api/v2/invoiceInitPay" ;
+
 }

@@ -8,7 +8,7 @@ import '../../../../core/cubits/category_cubit/category_cubit.dart';
 import '../../../../core/theming/app_colors.dart';
 import '../../../../core/widgets/app_back_button.dart';
 import '../../../../core/widgets/reusable_page_name.dart';
-import '../../../../data/book_model.dart';
+import '../../../../data/models/book_model.dart';
 
 class BooksByCategoryScreen extends StatelessWidget {
   const BooksByCategoryScreen({super.key});
@@ -20,7 +20,7 @@ class BooksByCategoryScreen extends StatelessWidget {
     var size = MediaQuery.of(context).size;
     return BlocConsumer<CategoryCubit, CategoryState>(
       listener: (context, state) {
-        if (state is GetBooksByCategoryIdLoading) {
+        if (state is GetBooksByCategoryIdSuccess) {
           EasyLoading.showSuccess(" successful");
         } else if (state is GetBooksByCategoryIdFailed) {
           EasyLoading.showError(state.error);
@@ -52,7 +52,9 @@ class BooksByCategoryScreen extends StatelessWidget {
                             Center(
                               child: ReusablePageName(
                                 width: 170,
-                                text: categoryCubit.booksByCategory[0].categoryName ?? "",
+                                text: categoryCubit.booksByCategory.isNotEmpty
+                                    ? categoryCubit.booksByCategory[0].categoryName ?? "No Category"
+                                    : "No Category",
                               ),
                             ),
                             const Spacer(),
@@ -61,25 +63,31 @@ class BooksByCategoryScreen extends StatelessWidget {
                         const SizedBox(height: 12),
 
                         ///--------the books list by category gridView------>
-
-                        GridView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                              childAspectRatio: 0.54, crossAxisCount: 2),
-                          itemCount: categoryCubit.booksByCategory.length,
-                          itemBuilder: (context, index) {
-                            if (state is GetAllBooksLoading) {
-                              return const AppShimmer();
-                            } else {
-                              BookModel current = categoryCubit.booksByCategory[index];
-                              return TheBookCardWidget(
-                                current: current,
-                                index: index,
-                              );
-                            }
-                          },
-                        )
+                        categoryCubit.booksByCategory.isEmpty
+                            ? const Center(
+                                child: Text(
+                                  "No books available in this category.",
+                                  style: TextStyle(color: AppColors.primary),
+                                ),
+                              )
+                            : GridView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                    childAspectRatio: 0.54, crossAxisCount: 2),
+                                itemCount: categoryCubit.booksByCategory.length,
+                                itemBuilder: (context, index) {
+                                  if (state is GetAllBooksLoading) {
+                                    return const AppShimmer();
+                                  } else {
+                                    BookModel current = categoryCubit.booksByCategory[index];
+                                    return TheBookCardWidget(
+                                      current: current,
+                                      index: index,
+                                    );
+                                  }
+                                },
+                              )
                       ],
                     ),
                   ),

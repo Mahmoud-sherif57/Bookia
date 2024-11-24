@@ -16,12 +16,13 @@ class BookiaApp extends StatelessWidget {
     return  MultiBlocProvider(
       providers: [
         BlocProvider(create: (context)=> HomeScreenCubit()),
-        BlocProvider(create: (context)=> CategoryCubit()),
-        BlocProvider(create: (context)=> AuthCubit()),
+        BlocProvider(create: (context)=> CategoryCubit()..getAllBooks),
+        BlocProvider(create: (context)=> AuthCubit()..getUserDataFromPrefs),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
        theme: lightTheme,
+       title: "Bookia", // to change the background name app ..
        home:  const SplashScreen(),
         builder: EasyLoading.init(),
       ),
